@@ -1,10 +1,46 @@
 {
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/imovel/:ref", "destination": "/api/imovel?ref=:ref" },
-    { "source": "/sitemap.xml", "destination": "/api/sitemap" }
+    {
+      "source": "/imovel/:ref",
+      "destination": "/api/imovel?ref=:ref"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/sitemap"
+    }
   ],
   "headers": [
-    { "source": "/assets/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=3600" }] }
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/imovel/:slug/:ref",
+      "destination": "/imovel/:ref",
+      "permanent": true
+    },
+    {
+      "source": "/imoveis/:caminho+",
+      "destination": "/imoveis",
+      "permanent": true
+    },
+    {
+      "source": "/(busca|pesquisa|venda|comprar)/:caminho*",
+      "destination": "/imoveis",
+      "permanent": true
+    },
+    {
+      "source": "/(contato|fale-conosco|sobre|quem-somos)",
+      "destination": "/#contato",
+      "permanent": true
+    }
   ]
 }
