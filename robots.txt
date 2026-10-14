@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://residirimobiliaria.com.br/sitemap.xml

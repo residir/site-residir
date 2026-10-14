@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<title>Imóveis à venda — Residir Imobiliária</title>
+<meta name="description" content="Busque casas, apartamentos e terrenos à venda no Litoral Norte da Bahia, em Salvador e região, com filtros por bairro, dormitórios e valor.">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0B4A50">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/config.js"></script>
+<script src="/assets/site.js" defer></script>
+</head>
+<body data-pagina="imoveis">
+<header class="topo" id="topo"></header>
+<main class="wrap vitrine">
+  <form class="filtros" id="filtros" aria-label="Filtros">
+    <label>Buscar<input name="q" type="search" placeholder="Referência, condomínio, bairro…"></label>
+    <label>Tipo<select name="tipo"><option value="">Todos</option></select></label>
+    <label>Cidade ou bairro<select name="local"><option value="">Qualquer lugar</option></select></label>
+    <label>Dormitórios<select name="dorm"><option value="">Qualquer</option><option value="1">1 ou mais</option><option value="2">2 ou mais</option><option value="3">3 ou mais</option><option value="4">4 ou mais</option></select></label>
+    <label>Vagas<select name="vagas"><option value="">Qualquer</option><option value="1">1 ou mais</option><option value="2">2 ou mais</option><option value="3">3 ou mais</option></select></label>
+    <div class="duplo"><label>Valor mínimo<input name="min" type="number" min="0" step="50000" inputmode="numeric" placeholder="R$"></label><label>Valor máximo<input name="max" type="number" min="0" step="50000" inputmode="numeric" placeholder="R$"></label></div>
+    <button class="btn btn-linha" type="button" id="limpar">Limpar filtros</button>
+  </form>
+  <section aria-labelledby="titulo-vitrine">
+    <div class="vitrine-h"><div><h1 id="titulo-vitrine">Imóveis à venda</h1><p id="contagem" aria-live="polite">Carregando…</p></div>
+      <div style="display:flex;gap:8px"><button class="btn btn-linha abrir-filtros" type="button">Filtros</button><label class="sr" for="ordem">Ordenar</label><select id="ordem"><option value="recentes">Mais recentes</option><option value="menor">Menor valor</option><option value="maior">Maior valor</option></select></div></div>
+    <div class="grade" id="resultado"></div>
+    <div class="mais" id="mais"></div>
+  </section>
+</main>
+<footer class="rodape" id="rodape"></footer>
+</body>
+</html>

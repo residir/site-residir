@@ -1,0 +1,35 @@
+SITE RESIDIR IMOBILIÁRIA — residirimobiliaria.com.br
+Os imóveis vêm direto do CRM (Supabase): o que você muda no CRM aparece no site.
+
+ANTES DE PUBLICAR
+1. No CRM, rode no Supabase o script supabase/22-site-e-fotos.sql (versão 3.29.0 do CRM).
+2. Abra config.js e confira os contatos: WhatsApp, telefone, e-mail, Instagram, CRECI e endereço.
+
+PUBLICAR (uma vez)
+1. GitHub: crie um repositório novo chamado "site-residir" (privado) e envie TODOS os arquivos desta pasta,
+   mantendo as pastas "assets" e "api" (Add file > Upload files > arraste a pasta inteira > Commit changes).
+2. Vercel: Add New > Project > importe "site-residir" > Deploy (não há configuração a mudar).
+3. Vercel > o projeto > Settings > Domains > adicione residirimobiliaria.com.br e www.residirimobiliaria.com.br.
+4. No painel do domínio (Registro.br ou onde o domínio está), crie os registros que a Vercel mostrar.
+   Normalmente: registro A de "@" para 76.76.21.21 e CNAME de "www" para cname.vercel-dns.com.
+   NÃO altere os registros MX (e-mail) nem o CNAME "crm" do CRM.
+5. Em alguns minutos o site abre em https://residirimobiliaria.com.br.
+
+O QUE O SITE TEM
+- Página inicial: busca, bairros com imóveis, destaques, lançamentos e contato.
+- /imoveis: vitrine com filtros (tipo, cidade/bairro, dormitórios, vagas, valor, busca).
+- /imovel/REFERENCIA: página de cada imóvel (galeria, ficha, características, mapa aproximado, vídeo),
+  preparada para o Google e para a prévia com foto no WhatsApp.
+- Formulários "Fale com um corretor" e "Quero receber contato": criam o lead no CRM (origem "Site"),
+  com o imóvel de interesse e a mensagem na anotação. Se a pessoa já é lead, a anotação vai para o cadastro dela.
+- /sitemap.xml para o Google.
+
+O QUE APARECE NO SITE
+- Imóveis "Disponível" ou "Reservado" marcados "Mostrar no site" (CRM > Imóveis > Editar).
+- "Destaque na página inicial" escolhe os imóveis da seção de destaques.
+- Rua, número e mapa só aparecem se marcados no imóvel; o mapa mostra posição aproximada.
+- Proprietário, observações privadas, comissão e anotações nunca saem do CRM.
+
+ALTERAR TEXTOS OU CONTATOS
+- Contatos: config.js. Textos da página inicial: index.html. Visual: assets/site.css.
+- Depois de alterar, envie o arquivo ao GitHub; a Vercel publica sozinha.
