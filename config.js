@@ -10,8 +10,8 @@
     whatsapp: '5571992047763',
     telefoneExibicao: '(71) 99204-7763',
     email: 'gabrielpinto@residirimobiliaria.com.br',
-    instagram: '',            // ex.: 'residirimobiliaria' (sem @)
-    creci: '',                // ex.: 'CRECI/BA 0000-J'
+    instagram: 'gabrielpinto.imoveis',            // ex.: 'residirimobiliaria' (sem @)
+    creci: 'CRECI/BA 25.441',                // ex.: 'CRECI/BA 0000-J'
     endereco: 'Av. Prefeito Celso Alves Pinheiro da Silva, nº 103, Ed. Revi Center, Sala 203, Centro, Lauro de Freitas/BA',
     // Supabase do CRM (chave pública — pode ficar no site)
     supabaseUrl: 'https://sxesceeoedcafuhjfrtn.supabase.co',
