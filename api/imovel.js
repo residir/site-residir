@@ -23,7 +23,7 @@ ${imagem ? `<meta property="og:image" content="${esc(imagem)}"><meta name="twitt
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/site.css"><script src="/config.js"></script><script src="/assets/site.js" defer></script>${extra}`;
+<link rel="stylesheet" href="/assets/site.css"><script src="/config.js"></script><script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script><script defer src="/_vercel/insights/script.js"></script><script src="/assets/site.js" defer></script>${extra}`;
 }
 
 function pagina(i, semelhantes) {
