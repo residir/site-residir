@@ -19,8 +19,8 @@ function head({ titulo, descricao, url, imagem, extra = '' }) {
   return `<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#0B4A50">
 <title>${esc(titulo)}</title><meta name="description" content="${esc(descricao)}"><link rel="canonical" href="${esc(url)}">
 <meta property="og:type" content="website"><meta property="og:site_name" content="${esc(C.nome)}"><meta property="og:title" content="${esc(titulo)}"><meta property="og:description" content="${esc(descricao)}"><meta property="og:url" content="${esc(url)}">
-${imagem ? `<meta property="og:image" content="${esc(imagem)}"><meta name="twitter:card" content="summary_large_image">` : ''}
-<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+${imagem ? `<meta property="og:image" content="${esc(imagem)}">` : `<meta property="og:image" content="${C.dominio}/logo/compartilhar"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">`}<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/logo/favicon" sizes="48x48"><link rel="apple-touch-icon" href="/logo/apple">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/site.css"><script src="/config.js"></script><script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script><script defer src="/_vercel/insights/script.js"></script><script src="/assets/site.js" defer></script>${extra}`;
