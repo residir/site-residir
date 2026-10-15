@@ -11,6 +11,42 @@
   var nomeImovel = function (i) { return i.titulo || ((i.tipo || 'Imóvel') + (i.bairro ? ' em ' + titulo(i.bairro) : '')); };
   var local = function (i) { return [i.bairro ? titulo(i.bairro) : '', i.cidade].filter(Boolean).join(', '); };
   var area = function (i) { var a = i.area_privativa || i.area_total; return a ? String(a).replace('.', ',') + ' m²' : ''; };
+  /* vídeo da capa: YouTube, Vimeo ou arquivo MP4/WEBM/MOV */
+  function videoCapa(url) {
+    var u = String(url || '').trim(), m;
+    if ((m = u.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([\w-]{11})/))) return { tipo: 'yt', src: 'https://www.youtube-nocookie.com/embed/' + m[1] + '?autoplay=1&mute=1&loop=1&playlist=' + m[1] + '&controls=0&playsinline=1&rel=0&modestbranding=1&disablekb=1&iv_load_policy=3' };
+    if ((m = u.match(/vimeo\.com\/(?:video\/)?(\d+)/))) return { tipo: 'vm', src: 'https://player.vimeo.com/video/' + m[1] + '?background=1&autoplay=1&loop=1&muted=1' };
+    if (/^https:\/\/\S+\.(mp4|webm|mov)(\?\S*)?$/i.test(u)) return { tipo: 'mp4', src: u };
+    return null;
+  }
+  function montarVideoCapa(capa) {
+    var semMov = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var econ = navigator.connection && navigator.connection.saveData;
+    var v = capa.video_capa && !econ ? videoCapa(capa.video_capa) : null;
+    if (!v) return;
+    var box = $('#capa'), ab = box.parentNode, el, tocando = false;
+    var criar = function () {
+      if (v.tipo === 'mp4') {
+        el = document.createElement('video'); el.muted = true; el.defaultMuted = true; el.loop = true; el.autoplay = true; el.playsInline = true;
+        el.setAttribute('playsinline', ''); el.setAttribute('muted', ''); el.preload = 'auto'; el.src = v.src;
+        el.addEventListener('playing', function () { el.classList.add('ativo'); });
+      } else {
+        el = document.createElement('iframe'); el.src = v.src; el.title = 'Vídeo do imóvel'; el.allow = 'autoplay; encrypted-media; picture-in-picture'; el.tabIndex = -1;
+        el.addEventListener('load', function () { setTimeout(function () { el.classList.add('ativo'); }, 1200); });
+      }
+      el.className = 'capa-video' + (v.tipo === 'mp4' ? '' : ' capa-frame'); el.setAttribute('aria-hidden', 'true');
+      box.insertBefore(el, box.firstChild.nextSibling); tocando = true; marcar();
+    };
+    var parar = function () { if (v.tipo === 'mp4') { el.pause(); el.classList.remove('ativo'); } else { el.remove(); el = null; } tocando = false; marcar(); };
+    var retomar = function () { if (v.tipo === 'mp4') { el.play(); } else criar(); tocando = true; marcar(); };
+    var bt = document.createElement('button'); bt.type = 'button'; bt.className = 'capa-pausa';
+    var marcar = function () { bt.setAttribute('aria-label', tocando ? 'Pausar o vídeo da capa' : 'Tocar o vídeo da capa'); bt.innerHTML = tocando ? '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>' : '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>'; };
+    bt.addEventListener('click', function () { tocando ? parar() : retomar(); });
+    ab.appendChild(bt);
+    var cr = $('#capaLink'); if (cr) cr.textContent = cr.textContent.replace(/^Na foto:/, 'No vídeo:');
+    if (semMov) { marcar(); return; }
+    criar();
+  }
   var secaoDe = function (i) { return i.secao || (i.lancamento ? 'lancamento' : i.destaque ? 'destaque' : 'vitrine'); };
   var TIT_SEC = { destaque: 'Imóveis em destaque', vitrine: 'Imóveis', lancamento: 'Lançamentos' };
   var waUrl = function (txt) { return 'https://wa.me/' + C.whatsapp + '?text=' + encodeURIComponent(txt); };
@@ -104,8 +140,8 @@
     imoveis().then(function (L) {
       var dest = L.filter(function (i) { return secaoDe(i) === 'destaque' && i.foto; });
       var comuns = L.filter(function (i) { return secaoDe(i) === 'vitrine' && i.foto; });
-      var capa = dest[0] || comuns[0];
-      if (capa) { $('#capa').innerHTML = '<img src="' + esc(capa.foto) + '" alt="">'; var cr = $('#capaLink'); cr.href = '/imovel/' + encodeURIComponent(capa.referencia); cr.textContent = 'Na foto: ' + nomeImovel(capa).slice(0, 48) + (nomeImovel(capa).length > 48 ? '…' : ''); cr.hidden = false; }
+      var capa = L.filter(function (i) { return i.video_capa && i.foto; })[0] || dest[0] || comuns[0];
+      if (capa) { $('#capa').innerHTML = '<img src="' + esc(capa.foto) + '" alt="">'; var cr = $('#capaLink'); cr.href = '/imovel/' + encodeURIComponent(capa.referencia); cr.textContent = 'Na foto: ' + nomeImovel(capa).slice(0, 48) + (nomeImovel(capa).length > 48 ? '…' : ''); cr.hidden = false; montarVideoCapa(capa); }
       var cont = {}; L.forEach(function (i) { if (!i.bairro) return; var k = titulo(i.bairro); cont[k] = (cont[k] || 0) + 1; });
       var top = Object.keys(cont).sort(function (a, b) { return cont[b] - cont[a]; }).slice(0, 8);
       $('#bairros').innerHTML = top.length ? '<h2>Onde estão os imóveis</h2><ul>' + top.map(function (b) { return '<li><a href="/imoveis?local=' + encodeURIComponent('b:' + b) + '">' + esc(b) + ' <small>' + cont[b] + '</small></a></li>'; }).join('') + '</ul>' : '';
