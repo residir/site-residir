@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<title>Residir Imobiliária — imóveis no Litoral Norte da Bahia</title>
+<meta name="description" content="Casas, apartamentos e terrenos à venda em Itacimirim, Porto Sauípe, Imbassaí, Guarajuba, Salvador e região. Fale com um corretor da Residir pelo WhatsApp.">
+<meta property="og:title" content="Residir Imobiliária — imóveis no Litoral Norte da Bahia">
+<meta property="og:description" content="Casas, apartamentos e terrenos à venda no Litoral Norte da Bahia, em Salvador e região.">
+<meta property="og:type" content="website">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0B4A50">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/config.js"></script>
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script><script defer src="/_vercel/insights/script.js"></script>
+<script src="/assets/site.js" defer></script>
+</head>
+<body data-pagina="inicio">
+<header class="topo" id="topo"></header>
+<main>
+  <section class="abertura" aria-labelledby="titulo-inicio">
+    <div class="abertura-foto" id="capa"></div>
+    <div class="wrap">
+      <h1 id="titulo-inicio">Sua casa no Litoral Norte da Bahia</h1>
+      <p>Casas, apartamentos e terrenos à venda de Itacimirim a Porto Sauípe, em Salvador e região, com corretores que conhecem cada condomínio.</p>
+    </div>
+    <a class="abertura-cred" id="capaLink" hidden></a>
+  </section>
+  <div class="wrap busca">
+    <form id="buscaForm" action="/imoveis" method="get" role="search" aria-label="Buscar imóveis">
+      <label>Tipo<select name="tipo"><option value="">Todos</option></select></label>
+      <label>Cidade ou bairro<select name="local"><option value="">Qualquer lugar</option></select></label>
+      <label>Dormitórios<select name="dorm"><option value="">Qualquer</option><option value="1">1 ou mais</option><option value="2">2 ou mais</option><option value="3">3 ou mais</option><option value="4">4 ou mais</option></select></label>
+      <label>Até<select name="max"><option value="">Qualquer valor</option><option value="400000">R$ 400 mil</option><option value="600000">R$ 600 mil</option><option value="800000">R$ 800 mil</option><option value="1200000">R$ 1,2 milhão</option><option value="2000000">R$ 2 milhões</option></select></label>
+      <button class="btn btn-sol" type="submit">Buscar imóveis</button>
+    </form>
+  </div>
+  <section class="wrap bairros" id="bairros" aria-live="polite"></section>
+  <section class="secao">
+    <div class="wrap">
+      <div class="secao-h"><div><h2>Imóveis em destaque</h2><p>Selecionados pela equipe da Residir.</p></div><a href="/imoveis" id="totalImoveis">Ver todos os imóveis</a></div>
+      <div class="grade" id="destaques"><div class="vazio">Carregando imóveis…</div></div>
+    </div>
+  </section>
+  <section class="secao secao-agua" id="empreendimentos">
+    <div class="wrap">
+      <div class="secao-h"><div><h2>Lançamentos</h2><p>Empreendimentos na planta com tabela atualizada. Fale com a gente para receber valores e condições.</p></div></div>
+      <div class="grade" id="lancLista"></div>
+      <div class="emps" id="empsLista"></div>
+    </div>
+  </section>
+  <section class="secao" id="contato">
+    <div class="wrap contato">
+      <div><h2>Fale com um corretor</h2><p>Conte o que você procura: região, tamanho, faixa de valor. Respondemos pelo WhatsApp, normalmente no mesmo dia.</p></div>
+      <form class="form" data-contato novalidate>
+        <div class="linha2"><label>Nome<input name="nome" autocomplete="name" required></label><label>Celular com DDD<input name="celular" type="tel" autocomplete="tel" inputmode="tel" required placeholder="(71) 9…"></label></div>
+        <label>E-mail (opcional)<input name="email" type="email" autocomplete="email"></label>
+        <label>O que você procura?<textarea name="mensagem" rows="4" placeholder="Ex.: casa de 3 quartos em Itacimirim, até R$ 900 mil"></textarea></label>
+        <input class="oculto" name="site" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <button class="btn btn-mar" type="submit">Enviar meu contato</button>
+        <div class="form-msg" role="status" aria-live="polite"></div>
+      </form>
+    </div>
+  </section>
+</main>
+<footer class="rodape" id="rodape"></footer>
+</body>
+</html>
