@@ -193,3 +193,10 @@ select:focus,input:focus,textarea:focus{border-color:var(--mar);outline:none;box
 @media (prefers-reduced-motion: reduce){.capa-video{transition:none}}
 /* versão do site no rodapé */
 .rod-versao{margin-left:8px;opacity:.6;font-size:.72rem;letter-spacing:.02em;white-space:nowrap}
+/* logo do site (configurada no CRM) */
+.marca.com-logo{align-items:center;padding:8px 0}
+.logo-img{display:block;height:var(--h);width:auto;max-width:min(60vw,420px);object-fit:contain}
+.rod-logo{margin-bottom:10px}.rod-logo.com-logo .logo-img{max-width:min(80vw,360px)}
+@media (max-width:760px){.logo-img{height:var(--hc)}}
+.topo .wrap{height:auto;min-height:68px}
+@media (max-width:760px){.topo .wrap{min-height:60px}}

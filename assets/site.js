@@ -47,7 +47,27 @@
     if (semMov) { marcar(); return; }
     criar();
   }
-  var SITE_VERSAO = '1.6.2'; /* versão do site (Versionamento Semântico) — ver CHANGELOG.md */
+  var SITE_VERSAO = '1.7.0';
+  /* logo do site, configurada no CRM (Ajustes › Logo do site) */
+  function identCache() { try { var c = JSON.parse(localStorage.getItem('res_ident') || 'null'); return c && c.d ? c : null; } catch (_) { return null; } }
+  function logoHTML(L, onde) {
+    var d = L[onde], c = L[onde + 'Cel'];
+    if (!d && !c) return '';
+    var cap = onde === 'topo' ? 'Topo' : 'Rodape';
+    var hd = L['alt' + cap] || (onde === 'topo' ? 56 : 72), hc = L['alt' + cap + 'Cel'] || (onde === 'topo' ? 44 : 60);
+    return '<picture>' + (c && d ? '<source media="(max-width:760px)" srcset="' + esc(c) + '">' : '') + '<img class="logo-img" src="' + esc(d || c) + '" alt="' + esc(C.nome) + '" style="--h:' + hd + 'px;--hc:' + hc + 'px" decoding="async"></picture>';
+  }
+  function aplicarLogos(L) {
+    var m = $('.topo .marca'), lt = logoHTML(L || {}, 'topo');
+    if (m) { if (lt) { m.innerHTML = lt; m.classList.add('com-logo'); } else if (m.classList.contains('com-logo')) { m.innerHTML = '<b>Residir</b><span>Imobiliária</span>'; m.classList.remove('com-logo'); } }
+    var r = $('#rodLogo'), lr = logoHTML(L || {}, 'rodape');
+    if (r) { r.innerHTML = lr || '<b>' + esc(C.nome) + '</b>'; r.classList.toggle('com-logo', !!lr); }
+  }
+  function identidade() {
+    var c = identCache(); if (c) aplicarLogos(c.d);
+    if (c && Date.now() - c.t < 600000) return;
+    rpc('site_identidade').then(function (d) { d = d || {}; try { localStorage.setItem('res_ident', JSON.stringify({ t: Date.now(), d: d })); } catch (_) {} aplicarLogos(d); }, function () {});
+  } /* versão do site (Versionamento Semântico) — ver CHANGELOG.md */
   var secaoDe = function (i) { return i.secao || (i.lancamento ? 'lancamento' : i.destaque ? 'destaque' : 'vitrine'); };
   var TIT_SEC = { destaque: 'Imóveis em destaque', vitrine: 'Imóveis', lancamento: 'Lançamentos' };
   var waUrl = function (txt) { return 'https://wa.me/' + C.whatsapp + '?text=' + encodeURIComponent(txt); };
@@ -92,10 +112,11 @@
       '<a class="btn btn-wa" href="' + waUrl('Olá! Vim pelo site da Residir e gostaria de atendimento.') + '" target="_blank" rel="noopener">' + IC.wa + '<span>WhatsApp</span></a></div>';
     marcarMenu(pag === 'imoveis' ? (new URLSearchParams(location.search).get('secao') || 'vitrine') : pag === 'imovel' ? (lancPag ? 'lancamento' : 'vitrine') : '');
     var r = $('#rodape');
-    if (r) r.innerHTML = '<div class="wrap"><div><b>' + esc(C.nome) + '</b><p>Imóveis à venda no Litoral Norte da Bahia, em Salvador e região.</p>' + (C.creci ? '<p>' + esc(C.creci) + '</p>' : '') + '</div>' +
+    if (r) r.innerHTML = '<div class="wrap"><div><div class="rod-logo" id="rodLogo"><b>' + esc(C.nome) + '</b></div><p>Imóveis à venda no Litoral Norte da Bahia, em Salvador e região.</p>' + (C.creci ? '<p>' + esc(C.creci) + '</p>' : '') + '</div>' +
       '<div><p><b style="font-size:1rem">Atendimento</b></p><p><a class="rod-wa" href="' + waUrl('Olá! Vim pelo site da Residir.') + '" target="_blank" rel="noopener" aria-label="Conversar no WhatsApp: ' + esc(C.telefoneExibicao) + '"><span class="rod-wa-ic">' + IC.wa + '</span>' + esc(C.telefoneExibicao) + '</a>' + (C.email ? '<br><a href="mailto:' + esc(C.email) + '">' + esc(C.email) + '</a>' : '') + (C.endereco ? '<br>' + esc(C.endereco) : '') + '</p></div>' +
       '<div><p><b style="font-size:1rem">Navegue</b></p><p><a href="/imoveis?secao=destaque">Imóveis em destaque</a><br><a href="/imoveis">Imóveis</a><br><a href="/imoveis?secao=lancamento">Lançamentos</a>' + (C.instagram ? '<br><a href="https://instagram.com/' + esc(C.instagram) + '" target="_blank" rel="noopener">Instagram</a>' : '') + '</p></div>' +
       '<small>© ' + new Date().getFullYear() + ' ' + esc(C.nome) + '. Valores e disponibilidade sujeitos a alteração sem aviso. <span class="rod-versao" title="Versão do site">v' + SITE_VERSAO + '</span></small></div>';
+    identidade();
     if (!$('.wa-fixo')) { var a = document.createElement('a'); a.className = 'wa-fixo'; a.href = waUrl('Olá! Vim pelo site da Residir.'); a.target = '_blank'; a.rel = 'noopener'; a.setAttribute('aria-label', 'Conversar no WhatsApp'); a.innerHTML = IC.wa; document.body.appendChild(a); }
   }
 
