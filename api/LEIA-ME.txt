@@ -16,7 +16,8 @@ PUBLICAR (uma vez)
 5. Em alguns minutos o site abre em https://residirimobiliaria.com.br.
 
 O QUE O SITE TEM
-- Página inicial: busca, bairros com imóveis, destaques, lançamentos e contato.
+- Página inicial: busca, bairros com imóveis, as seções Imóveis em destaque, Imóveis e Lançamentos, e contato.
+- Menu: Imóveis em destaque, Imóveis e Lançamentos, que abrem a vitrine já filtrada (ex.: /imoveis?secao=lancamento).
 - /imoveis: vitrine com filtros (tipo, cidade/bairro, dormitórios, vagas, valor, busca).
 - /imovel/REFERENCIA: página de cada imóvel (galeria, ficha, características, mapa aproximado, vídeo),
   preparada para o Google e para a prévia com foto no WhatsApp.
