@@ -11,6 +11,8 @@
   var nomeImovel = function (i) { return i.titulo || ((i.tipo || 'Imóvel') + (i.bairro ? ' em ' + titulo(i.bairro) : '')); };
   var local = function (i) { return [i.bairro ? titulo(i.bairro) : '', i.cidade].filter(Boolean).join(', '); };
   var area = function (i) { var a = i.area_privativa || i.area_total; return a ? String(a).replace('.', ',') + ' m²' : ''; };
+  var secaoDe = function (i) { return i.secao || (i.lancamento ? 'lancamento' : i.destaque ? 'destaque' : 'vitrine'); };
+  var TIT_SEC = { destaque: 'Imóveis em destaque', vitrine: 'Imóveis', lancamento: 'Lançamentos' };
   var waUrl = function (txt) { return 'https://wa.me/' + C.whatsapp + '?text=' + encodeURIComponent(txt); };
   var IC = {
     cama: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 18V8M21 18v-5a3 3 0 0 0-3-3H10v8M3 14h18M6 11h2"/></svg>',
@@ -49,15 +51,18 @@
     var pag = document.body.getAttribute('data-pagina') || '', lancPag = document.body.hasAttribute('data-lancamento');
     var t = $('#topo');
     if (t) t.innerHTML = '<div class="wrap"><a class="marca" href="/" aria-label="' + esc(C.nome) + ', página inicial"><b>Residir</b><span>Imobiliária</span></a>' +
-      '<nav class="menu" aria-label="Principal"><a href="/imoveis"' + (pag === 'imoveis' || (pag === 'imovel' && !lancPag) ? ' aria-current="page"' : '') + '>Imóveis</a><a href="/#empreendimentos"' + (lancPag ? ' aria-current="page"' : '') + '>Lançamentos</a><a href="/#contato">Fale conosco</a></nav>' +
+      '<nav class="menu" aria-label="Principal"><a href="/imoveis?secao=destaque" data-m="destaque">Imóveis em destaque</a><a href="/imoveis" data-m="vitrine">Imóveis</a><a href="/imoveis?secao=lancamento" data-m="lancamento">Lançamentos</a><a href="/#contato">Fale conosco</a></nav>' +
       '<a class="btn btn-wa" href="' + waUrl('Olá! Vim pelo site da Residir e gostaria de atendimento.') + '" target="_blank" rel="noopener">' + IC.wa + '<span>WhatsApp</span></a></div>';
+    marcarMenu(pag === 'imoveis' ? (new URLSearchParams(location.search).get('secao') || 'vitrine') : pag === 'imovel' ? (lancPag ? 'lancamento' : 'vitrine') : '');
     var r = $('#rodape');
     if (r) r.innerHTML = '<div class="wrap"><div><b>' + esc(C.nome) + '</b><p>Imóveis à venda no Litoral Norte da Bahia, em Salvador e região.</p>' + (C.creci ? '<p>' + esc(C.creci) + '</p>' : '') + '</div>' +
       '<div><p><b style="font-size:1rem">Atendimento</b></p><p><a class="rod-wa" href="' + waUrl('Olá! Vim pelo site da Residir.') + '" target="_blank" rel="noopener" aria-label="Conversar no WhatsApp: ' + esc(C.telefoneExibicao) + '"><span class="rod-wa-ic">' + IC.wa + '</span>' + esc(C.telefoneExibicao) + '</a>' + (C.email ? '<br><a href="mailto:' + esc(C.email) + '">' + esc(C.email) + '</a>' : '') + (C.endereco ? '<br>' + esc(C.endereco) : '') + '</p></div>' +
-      '<div><p><b style="font-size:1rem">Navegue</b></p><p><a href="/imoveis">Todos os imóveis</a><br><a href="/#empreendimentos">Lançamentos</a>' + (C.instagram ? '<br><a href="https://instagram.com/' + esc(C.instagram) + '" target="_blank" rel="noopener">Instagram</a>' : '') + '</p></div>' +
+      '<div><p><b style="font-size:1rem">Navegue</b></p><p><a href="/imoveis?secao=destaque">Imóveis em destaque</a><br><a href="/imoveis">Imóveis</a><br><a href="/imoveis?secao=lancamento">Lançamentos</a>' + (C.instagram ? '<br><a href="https://instagram.com/' + esc(C.instagram) + '" target="_blank" rel="noopener">Instagram</a>' : '') + '</p></div>' +
       '<small>© ' + new Date().getFullYear() + ' ' + esc(C.nome) + '. Valores e disponibilidade sujeitos a alteração sem aviso.</small></div>';
     if (!$('.wa-fixo')) { var a = document.createElement('a'); a.className = 'wa-fixo'; a.href = waUrl('Olá! Vim pelo site da Residir.'); a.target = '_blank'; a.rel = 'noopener'; a.setAttribute('aria-label', 'Conversar no WhatsApp'); a.innerHTML = IC.wa; document.body.appendChild(a); }
   }
+
+  function marcarMenu(sec) { $$('.menu [data-m]').forEach(function (a) { if (a.getAttribute('data-m') === sec) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }); }
 
   /* Formulário de contato → lead no CRM (com aviso por e-mail). Se a função de aviso falhar, grava direto no banco. */
   function enviarContato(c) {
@@ -97,19 +102,25 @@
   /* Página inicial */
   function inicio() {
     imoveis().then(function (L) {
-      var dest = L.filter(function (i) { return i.destaque && i.foto; });
-      var comuns = L.filter(function (i) { return i.foto && !i.lancamento; });
+      var dest = L.filter(function (i) { return secaoDe(i) === 'destaque' && i.foto; });
+      var comuns = L.filter(function (i) { return secaoDe(i) === 'vitrine' && i.foto; });
       var capa = dest[0] || comuns[0];
       if (capa) { $('#capa').innerHTML = '<img src="' + esc(capa.foto) + '" alt="">'; var cr = $('#capaLink'); cr.href = '/imovel/' + encodeURIComponent(capa.referencia); cr.textContent = 'Na foto: ' + nomeImovel(capa).slice(0, 48) + (nomeImovel(capa).length > 48 ? '…' : ''); cr.hidden = false; }
       var cont = {}; L.forEach(function (i) { if (!i.bairro) return; var k = titulo(i.bairro); cont[k] = (cont[k] || 0) + 1; });
       var top = Object.keys(cont).sort(function (a, b) { return cont[b] - cont[a]; }).slice(0, 8);
       $('#bairros').innerHTML = top.length ? '<h2>Onde estão os imóveis</h2><ul>' + top.map(function (b) { return '<li><a href="/imoveis?local=' + encodeURIComponent('b:' + b) + '">' + esc(b) + ' <small>' + cont[b] + '</small></a></li>'; }).join('') + '</ul>' : '';
-      var lista = (dest.length >= 3 ? dest : comuns).slice(0, 6);
-      $('#destaques').innerHTML = lista.map(cartao).join('') || '<div class="vazio">Os imóveis aparecem aqui assim que forem cadastrados no CRM.</div>';
-      $('#totalImoveis').textContent = L.length ? 'Ver os ' + L.length + ' imóveis' : '';
+      var secao = function (grade, total, sec, lista) {
+        $(grade).innerHTML = lista.slice(0, 6).map(cartao).join('');
+        var a = $(total); a.hidden = lista.length <= 6; a.textContent = 'Ver os ' + lista.length;
+        $(sec).hidden = !lista.length;
+      };
+      secao('#destaques', '#totalDest', '#destaques-sec', dest);
+      secao('#comuns', '#totalImoveis', '#imoveis-sec', comuns);
+      if (!L.length) { $('#destaques-sec').hidden = false; $('#destaques').innerHTML = '<div class="vazio">Os imóveis aparecem aqui assim que forem cadastrados no CRM.</div>'; }
       opcoesBusca(L, $('#buscaForm'));
-      var lanc = L.filter(function (i) { return i.lancamento; });
-      $('#lancLista').innerHTML = lanc.map(cartao).join('');
+      var lanc = L.filter(function (i) { return secaoDe(i) === 'lancamento'; });
+      $('#lancLista').innerHTML = lanc.slice(0, 6).map(cartao).join('');
+      $('#totalLanc').hidden = lanc.length <= 6; $('#totalLanc').textContent = 'Ver os ' + lanc.length;
       return lanc.length;
     }, function () { $('#destaques').innerHTML = '<div class="vazio">Não foi possível carregar os imóveis agora. Fale com a gente pelo WhatsApp.</div>'; return 0; })
     .then(function (nLanc) { return rpc('site_empreendimentos').then(function (E) { return [nLanc, E || []]; }, function () { return [nLanc, []]; }); })
@@ -141,6 +152,7 @@
     function aplicar() {
       var p = new FormData(f), loc = p.get('local') || '', q = semAc(p.get('q'));
       var R = L.filter(function (i) {
+        if (p.get('secao') && secaoDe(i) !== p.get('secao')) return false;
         if (p.get('tipo') && i.tipo !== p.get('tipo')) return false;
         if (loc.indexOf('c:') === 0 && i.cidade !== loc.slice(2)) return false;
         if (loc.indexOf('b:') === 0 && titulo(i.bairro) !== loc.slice(2)) return false;
@@ -154,6 +166,8 @@
       var o = $('#ordem').value;
       if (o === 'menor') R.sort(function (a, b) { return (a.preco || Infinity) - (b.preco || Infinity); });
       else if (o === 'maior') R.sort(function (a, b) { return (b.preco || 0) - (a.preco || 0); });
+      $('#titulo-vitrine').textContent = TIT_SEC[p.get('secao')] || 'Imóveis à venda';
+      marcarMenu(p.get('secao') || 'vitrine');
       $('#contagem').textContent = R.length + (R.length === 1 ? ' imóvel encontrado' : ' imóveis encontrados');
       $('#resultado').innerHTML = R.slice(0, lim).map(cartao).join('') || '<div class="vazio" style="grid-column:1/-1">Nenhum imóvel com esses filtros. Tente ampliar a busca ou <a href="' + waUrl('Olá! Procuro um imóvel e não encontrei no site. Podem me ajudar?') + '" target="_blank" rel="noopener">conte pelo WhatsApp o que você procura</a>.</div>';
       $('#mais').innerHTML = R.length > lim ? '<button class="btn btn-linha" type="button">Mostrar mais imóveis</button>' : '';
@@ -163,9 +177,11 @@
     f.addEventListener('input', function () { lim = 24; aplicar(); });
     f.addEventListener('change', function () { lim = 24; aplicar(); });
     f.addEventListener('submit', function (e) { e.preventDefault(); aplicar(); });
+    $$('[name=secao]').forEach(function (r) { r.addEventListener('change', function () { lim = 24; aplicar(); }); });
     $('#ordem').addEventListener('change', aplicar);
     $('#mais').addEventListener('click', function (e) { if (e.target.closest('button')) { lim += 24; aplicar(); } });
     $('#limpar').addEventListener('click', function () { f.reset(); aplicar(); });
+    var sq = new URLSearchParams(location.search).get('secao'); $$('[name=secao]').forEach(function (r) { r.checked = r.value === (TIT_SEC[sq] ? sq : ''); });
     imoveis().then(function (d) { L = d; opcoesBusca(L, f); var o = new URLSearchParams(location.search).get('ordem'); if (o) $('#ordem').value = o; aplicar(); })
       .catch(function () { $('#resultado').innerHTML = '<div class="vazio">Não foi possível carregar os imóveis agora. Tente novamente em instantes.</div>'; });
   }
