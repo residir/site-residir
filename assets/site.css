@@ -200,3 +200,11 @@ select:focus,input:focus,textarea:focus{border-color:var(--mar);outline:none;box
 @media (max-width:760px){.logo-img{height:var(--hc)}}
 .topo .wrap{height:auto;min-height:68px}
 @media (max-width:760px){.topo .wrap{min-height:60px}}
+/* política de privacidade */
+.politica{max-width:780px;padding-top:24px;padding-bottom:56px}
+.politica h1{font-size:clamp(1.9rem,4vw,2.6rem);margin:8px 0 4px}
+.politica .atualizada{color:var(--tinta-2);font-size:.9rem;margin:0 0 22px}
+.politica h2{font-size:1.25rem;margin:30px 0 8px}.politica h3{font-size:1.02rem;margin:16px 0 4px}
+.politica p,.politica li{line-height:1.65}.politica ul{padding-left:22px}.politica li{margin:4px 0}
+.aviso-priv{font-size:.82rem;color:var(--tinta-2);margin:2px 0 8px}.aviso-priv a{color:inherit}
+.rod-priv{color:#D6EBE9;margin-left:6px;white-space:nowrap}

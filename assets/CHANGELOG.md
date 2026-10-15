@@ -20,6 +20,14 @@ Cada versão informa o **script mínimo do banco** (pasta `supabase/` do CRM) e 
 
 ---
 
+## [1.8.0] — 15/10/2026
+**Requer:** banco até `28-logo-site.sql` · sem mudança no CRM
+
+### Adicionado
+- Página **Política de Privacidade** (`/privacidade`), conforme a LGPD: responsável pelos dados, dados coletados, finalidades, bases legais, compartilhamento com fornecedores, prazo de guarda, segurança, direitos do titular e canal de atendimento.
+- Link “Política de Privacidade” no rodapé de todas as páginas e aviso curto com o link nos formulários de contato (página inicial e página de cada imóvel).
+- `/privacidade` incluída no mapa do site (`/sitemap.xml`).
+
 ## [1.7.0] — 15/10/2026
 **Requer:** banco até `28-logo-site.sql` · entregue com o CRM 3.40.0
 
