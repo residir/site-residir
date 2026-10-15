@@ -20,6 +20,21 @@ Cada versão informa o **script mínimo do banco** (pasta `supabase/` do CRM) e 
 
 ---
 
+## [1.6.2] — 15/10/2026
+**Requer:** banco até `27-video-capa.sql` · sem mudança no CRM
+
+### Alterado
+- Descrições para o Google e para as prévias de link (WhatsApp, Instagram, Facebook) atualizadas para a nova região:
+  - página inicial: “Casas, apartamentos, villages e terrenos à venda de Arembepe a Subaúma, em Salvador e região metropolitana. Fale com um corretor da Residir pelo WhatsApp.”
+  - prévia de link da página inicial: “Casas, apartamentos, villages e terrenos à venda de Arembepe a Subaúma, em Salvador e região metropolitana.”
+  - vitrine (/imoveis): “Busque casas, apartamentos, villages e terrenos à venda de Arembepe a Subaúma, em Salvador e região metropolitana, com filtros por bairro, dormitórios e valor.”
+
+## [1.6.1] — 15/10/2026
+**Requer:** banco até `27-video-capa.sql` · sem mudança no CRM
+
+### Alterado
+- Texto da capa da página inicial: “Casas, Apartamentos, Villages e Terrenos à venda de Arembepe a Subaúma, em Salvador e região metropolitana, com Corretores que conhecem cada condomínio.”
+
 ## [1.6.0] — 15/10/2026
 **Requer:** banco até `27-video-capa.sql` · entregue com o CRM 3.38.0
 
