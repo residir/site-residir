@@ -39,17 +39,17 @@
       i.vagas ? '<span>' + IC.carro + i.vagas + (i.vagas > 1 ? ' vagas' : ' vaga') + '</span>' : '', area(i) ? '<span>' + IC.area + area(i) + '</span>' : ''].join('');
     return '<a class="imovel" href="/imovel/' + encodeURIComponent(i.referencia) + '">' +
       '<div class="imovel-foto">' + (i.foto ? '<img loading="lazy" src="' + esc(i.foto) + '" alt="' + esc(nomeImovel(i)) + '">' : '') +
-      (i.status === 'reservado' ? '<span class="selo selo-reservado">Reservado</span>' : i.prox_mar ? '<span class="selo">' + esc(i.prox_mar) + '</span>' : '') +
-      '<span class="preco-faixa">' + brl(i.preco) + '</span></div>' +
+      (i.status === 'reservado' ? '<span class="selo selo-reservado">Reservado</span>' : i.lancamento ? '<span class="selo selo-lanc">Lançamento</span>' : i.prox_mar ? '<span class="selo">' + esc(i.prox_mar) + '</span>' : '') +
+      '<span class="preco-faixa">' + (i.lancamento ? (i.preco ? '<small>a partir de</small> ' + brl(i.preco) : 'Consulte valores') : brl(i.preco)) + '</span></div>' +
       '<div class="imovel-txt"><h3>' + esc(nomeImovel(i)) + '</h3><div class="imovel-local">' + esc(local(i)) + '</div>' + (spec ? '<div class="imovel-spec">' + spec + '</div>' : '') + '</div></a>';
   }
 
   /* Cabeçalho, rodapé e WhatsApp fixo */
   function moldura() {
-    var pag = document.body.getAttribute('data-pagina') || '';
+    var pag = document.body.getAttribute('data-pagina') || '', lancPag = document.body.hasAttribute('data-lancamento');
     var t = $('#topo');
     if (t) t.innerHTML = '<div class="wrap"><a class="marca" href="/" aria-label="' + esc(C.nome) + ', página inicial"><b>Residir</b><span>Imobiliária</span></a>' +
-      '<nav class="menu" aria-label="Principal"><a href="/imoveis"' + (pag === 'imoveis' || pag === 'imovel' ? ' aria-current="page"' : '') + '>Imóveis</a><a href="/#empreendimentos">Lançamentos</a><a href="/#contato">Fale conosco</a></nav>' +
+      '<nav class="menu" aria-label="Principal"><a href="/imoveis"' + (pag === 'imoveis' || (pag === 'imovel' && !lancPag) ? ' aria-current="page"' : '') + '>Imóveis</a><a href="/#empreendimentos"' + (lancPag ? ' aria-current="page"' : '') + '>Lançamentos</a><a href="/#contato">Fale conosco</a></nav>' +
       '<a class="btn btn-wa" href="' + waUrl('Olá! Vim pelo site da Residir e gostaria de atendimento.') + '" target="_blank" rel="noopener">' + IC.wa + '<span>WhatsApp</span></a></div>';
     var r = $('#rodape');
     if (r) r.innerHTML = '<div class="wrap"><div><b>' + esc(C.nome) + '</b><p>Imóveis à venda no Litoral Norte da Bahia, em Salvador e região.</p>' + (C.creci ? '<p>' + esc(C.creci) + '</p>' : '') + '</div>' +
@@ -98,22 +98,30 @@
   function inicio() {
     imoveis().then(function (L) {
       var dest = L.filter(function (i) { return i.destaque && i.foto; });
-      var capa = dest[0] || L.filter(function (i) { return i.foto; })[0];
+      var comuns = L.filter(function (i) { return i.foto && !i.lancamento; });
+      var capa = dest[0] || comuns[0];
       if (capa) { $('#capa').innerHTML = '<img src="' + esc(capa.foto) + '" alt="">'; var cr = $('#capaLink'); cr.href = '/imovel/' + encodeURIComponent(capa.referencia); cr.textContent = 'Na foto: ' + nomeImovel(capa).slice(0, 48) + (nomeImovel(capa).length > 48 ? '…' : ''); cr.hidden = false; }
       var cont = {}; L.forEach(function (i) { if (!i.bairro) return; var k = titulo(i.bairro); cont[k] = (cont[k] || 0) + 1; });
       var top = Object.keys(cont).sort(function (a, b) { return cont[b] - cont[a]; }).slice(0, 8);
       $('#bairros').innerHTML = top.length ? '<h2>Onde estão os imóveis</h2><ul>' + top.map(function (b) { return '<li><a href="/imoveis?local=' + encodeURIComponent('b:' + b) + '">' + esc(b) + ' <small>' + cont[b] + '</small></a></li>'; }).join('') + '</ul>' : '';
-      var lista = (dest.length >= 3 ? dest : L.filter(function (i) { return i.foto; })).slice(0, 6);
+      var lista = (dest.length >= 3 ? dest : comuns).slice(0, 6);
       $('#destaques').innerHTML = lista.map(cartao).join('') || '<div class="vazio">Os imóveis aparecem aqui assim que forem cadastrados no CRM.</div>';
       $('#totalImoveis').textContent = L.length ? 'Ver os ' + L.length + ' imóveis' : '';
       opcoesBusca(L, $('#buscaForm'));
-    }).catch(function () { $('#destaques').innerHTML = '<div class="vazio">Não foi possível carregar os imóveis agora. Fale com a gente pelo WhatsApp.</div>'; });
-    rpc('site_empreendimentos').then(function (E) {
-      if (!E || !E.length) { $('#empreendimentos').hidden = true; return; }
+      var lanc = L.filter(function (i) { return i.lancamento; });
+      $('#lancLista').innerHTML = lanc.map(cartao).join('');
+      return lanc.length;
+    }, function () { $('#destaques').innerHTML = '<div class="vazio">Não foi possível carregar os imóveis agora. Fale com a gente pelo WhatsApp.</div>'; return 0; })
+    .then(function (nLanc) { return rpc('site_empreendimentos').then(function (E) { return [nLanc, E || []]; }, function () { return [nLanc, []]; }); })
+    .then(function (r) {
+      var E = r[1];
+      $('#lancLista').hidden = !r[0];
+      if (!r[0] && !E.length) { $('#empreendimentos').hidden = true; return; }
+      $('#empsLista').hidden = !E.length;
       $('#empsLista').innerHTML = E.map(function (e) {
         return '<a class="emp" href="' + waUrl('Olá! Gostaria de saber mais sobre o lançamento ' + e.nome + '.') + '" target="_blank" rel="noopener">' + (e.logo ? '<img loading="lazy" src="' + esc(e.logo) + '" alt="">' : '') + '<b>' + esc(e.nome) + '</b>' + (e.cidade || e.entrega ? '<small>' + esc([e.cidade, e.entrega ? 'Entrega ' + e.entrega : ''].filter(Boolean).join(' · ')) + '</small>' : '') + '</a>';
       }).join('');
-    }).catch(function () { $('#empreendimentos').hidden = true; });
+    });
   }
   function opcoesBusca(L, f) {
     if (!f) return;
