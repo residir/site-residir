@@ -38,15 +38,21 @@
     </form>
   </div>
   <section class="wrap bairros" id="bairros" aria-live="polite"></section>
-  <section class="secao">
+  <section class="secao" id="destaques-sec">
     <div class="wrap">
-      <div class="secao-h"><div><h2>Imóveis em destaque</h2><p>Selecionados pela equipe da Residir.</p></div><a href="/imoveis" id="totalImoveis">Ver todos os imóveis</a></div>
+      <div class="secao-h"><div><h2>Imóveis em destaque</h2><p>Selecionados pela equipe da Residir.</p></div><a href="/imoveis?secao=destaque" id="totalDest" hidden></a></div>
       <div class="grade" id="destaques"><div class="vazio">Carregando imóveis…</div></div>
+    </div>
+  </section>
+  <section class="secao secao-imoveis" id="imoveis-sec">
+    <div class="wrap">
+      <div class="secao-h"><div><h2>Imóveis</h2><p>Casas, apartamentos e terrenos à venda no Litoral Norte, em Salvador e região.</p></div><a href="/imoveis?secao=vitrine" id="totalImoveis" hidden></a></div>
+      <div class="grade" id="comuns"></div>
     </div>
   </section>
   <section class="secao secao-agua" id="empreendimentos">
     <div class="wrap">
-      <div class="secao-h"><div><h2>Lançamentos</h2><p>Empreendimentos na planta com tabela atualizada. Fale com a gente para receber valores e condições.</p></div></div>
+      <div class="secao-h"><div><h2>Lançamentos</h2><p>Empreendimentos na planta com tabela atualizada. Fale com a gente para receber valores e condições.</p></div><a href="/imoveis?secao=lancamento" id="totalLanc" hidden></a></div>
       <div class="grade" id="lancLista"></div>
       <div class="emps" id="empsLista"></div>
     </div>
