@@ -29,6 +29,7 @@ O QUE APARECE NO SITE
 - Imóveis "Disponível" ou "Reservado" marcados "Mostrar no site" (CRM > Imóveis > Editar).
 - "Na página inicial do site" (CRM > Imóveis > Editar) escolhe a seção: Imóveis em destaque, Lançamentos ou Só na vitrine.
   Os lançamentos aparecem com foto e abrem a página completa, com galeria e pedido de tabela.
+- Vídeo na capa: no CRM, marque "Rodar vídeo na capa do site" no imóvel (YouTube, Vimeo ou MP4 enviado pelo CRM).
 - A ordem dos imóveis em cada seção é definida no CRM > Imóveis > Ordem no site (na vitrine, "Recomendados").
 - Imóveis arquivados no CRM saem do site. Empreendimentos só aparecem (cartão com logo) se marcados "Mostrar no site".
 - Rua, número e mapa só aparecem se marcados no imóvel; o mapa mostra posição aproximada.
