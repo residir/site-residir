@@ -166,12 +166,13 @@
       var o = $('#ordem').value;
       if (o === 'menor') R.sort(function (a, b) { return (a.preco || Infinity) - (b.preco || Infinity); });
       else if (o === 'maior') R.sort(function (a, b) { return (b.preco || 0) - (a.preco || 0); });
+      else if (o === 'recentes') R.sort(function (a, b) { return String(b.atualizado_em || '').localeCompare(String(a.atualizado_em || '')); });
       $('#titulo-vitrine').textContent = TIT_SEC[p.get('secao')] || 'Imóveis à venda';
       marcarMenu(p.get('secao') || 'vitrine');
       $('#contagem').textContent = R.length + (R.length === 1 ? ' imóvel encontrado' : ' imóveis encontrados');
       $('#resultado').innerHTML = R.slice(0, lim).map(cartao).join('') || '<div class="vazio" style="grid-column:1/-1">Nenhum imóvel com esses filtros. Tente ampliar a busca ou <a href="' + waUrl('Olá! Procuro um imóvel e não encontrei no site. Podem me ajudar?') + '" target="_blank" rel="noopener">conte pelo WhatsApp o que você procura</a>.</div>';
       $('#mais').innerHTML = R.length > lim ? '<button class="btn btn-linha" type="button">Mostrar mais imóveis</button>' : '';
-      var u = new URLSearchParams(); p.forEach(function (v, k) { if (v) u.set(k, v); }); if (o !== 'recentes') u.set('ordem', o);
+      var u = new URLSearchParams(); p.forEach(function (v, k) { if (v) u.set(k, v); }); if (o) u.set('ordem', o);
       history.replaceState(null, '', location.pathname + (u.toString() ? '?' + u : ''));
     }
     f.addEventListener('input', function () { lim = 24; aplicar(); });
