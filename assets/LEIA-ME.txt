@@ -40,5 +40,5 @@ ALTERAR TEXTOS OU CONTATOS
 - Depois de alterar, envie o arquivo ao GitHub; a Vercel publica sozinha.
 
 VERSÃO
-- Versão atual: 1.6.0 (aparece no rodapé, ex.: "v1.6.0"). Histórico completo em CHANGELOG.md.
+- Versão atual: 1.6.2 (aparece no rodapé, ex.: "v1.6.2"). Histórico completo em CHANGELOG.md.
 - Ao publicar uma nova versão, atualize SITE_VERSAO em assets/site.js e registre a mudança no CHANGELOG.md.

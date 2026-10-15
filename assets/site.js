@@ -47,7 +47,7 @@
     if (semMov) { marcar(); return; }
     criar();
   }
-  var SITE_VERSAO = '1.6.0'; /* versão do site (Versionamento Semântico) — ver CHANGELOG.md */
+  var SITE_VERSAO = '1.6.2'; /* versão do site (Versionamento Semântico) — ver CHANGELOG.md */
   var secaoDe = function (i) { return i.secao || (i.lancamento ? 'lancamento' : i.destaque ? 'destaque' : 'vitrine'); };
   var TIT_SEC = { destaque: 'Imóveis em destaque', vitrine: 'Imóveis', lancamento: 'Lançamentos' };
   var waUrl = function (txt) { return 'https://wa.me/' + C.whatsapp + '?text=' + encodeURIComponent(txt); };
