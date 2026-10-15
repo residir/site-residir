@@ -46,7 +46,7 @@ function pagina(i, semelhantes) {
   return `<!doctype html><html lang="pt-BR"><head>${head({ titulo: `${nome(i)} — ${precoCurto} | ${C.nome}`, descricao, url, imagem: fotos[0], extra: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>` })}</head>
 <body data-pagina="imovel"${L ? ' data-lancamento' : ''}><header class="topo" id="topo"></header>
 <main class="wrap">
-  <nav class="trilha" aria-label="Você está em"><a href="/">Início</a> / ${L ? '<a href="/#empreendimentos">Lançamentos</a>' : '<a href="/imoveis">Imóveis</a>'} / <a href="/imoveis?local=${encodeURIComponent('c:' + (i.cidade || ''))}">${esc(i.cidade || '')}</a> / Ref. ${esc(i.referencia)}</nav>
+  <nav class="trilha" aria-label="Você está em"><a href="/">Início</a> / ${L ? '<a href="/imoveis?secao=lancamento">Lançamentos</a>' : '<a href="/imoveis">Imóveis</a>'} / <a href="/imoveis?local=${encodeURIComponent('c:' + (i.cidade || ''))}">${esc(i.cidade || '')}</a> / Ref. ${esc(i.referencia)}</nav>
   ${fotos.length ? `<div class="galeria">${fotos.slice(0, 3).map((u, k) => `<button type="button" class="${k === 0 ? 'g-principal' : ''}" data-foto="${k}" aria-label="Ampliar foto ${k + 1} de ${fotos.length}"><img src="${esc(u)}" alt="${k === 0 ? esc(nome(i)) : ''}" ${k ? 'loading="lazy"' : ''}>${k === Math.min(2, fotos.length - 1) && fotos.length > 1 ? `<span class="g-ver">Ver as ${fotos.length} fotos</span>` : ''}</button>`).join('')}</div>` : ''}
   <div class="detalhe">
     <article>
