@@ -30,24 +30,27 @@ function pagina(i, semelhantes) {
   const url = `${C.dominio}/imovel/${encodeURIComponent(i.referencia)}`;
   const fotos = [...(i.fotos || []), ...(i.fotos_condominio || [])];
   const resumo = [i.dormitorios ? `${i.dormitorios} dormitórios` : '', i.suites ? `${i.suites} ${i.suites > 1 ? 'suítes' : 'suíte'}` : '', i.vagas ? `${i.vagas} ${i.vagas > 1 ? 'vagas' : 'vaga'}` : '', m2(i.area_privativa || i.area_total)].filter(Boolean).join(', ');
-  const descricao = `${i.tipo || 'Imóvel'} à venda em ${local(i)} por ${brl(i.preco)}${resumo ? '. ' + resumo : ''}. Ref. ${i.referencia}.`;
+  const L = !!i.lancamento;
+  const precoTxt = L ? (i.preco ? `a partir de ${brl(i.preco)}` : 'valores sob consulta') : `por ${brl(i.preco)}`;
+  const descricao = `${L ? 'Lançamento: ' : ''}${i.tipo || 'Imóvel'} à venda em ${local(i)} ${precoTxt}${resumo ? '. ' + resumo : ''}. Ref. ${i.referencia}.`;
   const numeros = [[i.dormitorios, 'dormitórios'], [i.suites, i.suites > 1 ? 'suítes' : 'suíte'], [i.banheiros, 'banheiros'], [i.vagas, i.vagas > 1 ? 'vagas' : 'vaga'], [m2(i.area_privativa), 'área privativa'], [m2(i.area_total), 'área total']].filter(([v]) => v);
   const sim = (v) => (v === true ? 'Sim' : v === false ? 'Não' : v);
   const ficha = [['Tipo', [i.tipo, i.subtipo && i.subtipo !== i.tipo ? i.subtipo : ''].filter(Boolean).join(', ')], ['Estado', i.situacao], ['Condomínio', i.condominio], ['Mobília', i.mobilia], ['Proximidade do mar', i.prox_mar], ['Aceita financiamento', sim(i.aceita_financiamento)], ['Previsão de entrega', i.previsao_entrega], ['Ano de construção', i.ano_construcao], ['Andar', i.andar], ['Área construída', m2(i.area_construida)], ['Referência', i.referencia]].filter(([, v]) => v !== '' && v != null && v !== undefined);
   const etiquetas = (t, a) => (a && a.length ? `<div class="bloco"><h2>${t}</h2><ul class="etiquetas">${a.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>` : '');
   const taxas = [i.preco_condominio ? `Condomínio ${brl(i.preco_condominio)}/mês` : '', i.preco_iptu ? `IPTU ${brl(i.preco_iptu)}${i.periodo_iptu ? (i.periodo_iptu === 'anual' ? '/ano' : '/mês') : ''}` : ''].filter(Boolean).join(' · ');
-  const msgWa = `Olá! Tenho interesse no imóvel ${i.referencia} (${nome(i)}). ${url}`;
+  const msgWa = L ? `Olá! Quero receber a tabela atualizada e as condições do lançamento ${nome(i)} (Ref. ${i.referencia}). ${url}` : `Olá! Tenho interesse no imóvel ${i.referencia} (${nome(i)}). ${url}`;
+  const precoCurto = L ? (i.preco ? `A partir de ${brl(i.preco)}` : 'Consulte valores') : brl(i.preco);
   const ld = { '@context': 'https://schema.org', '@type': 'RealEstateListing', name: nome(i), description: descricao, url, image: fotos.slice(0, 6),
     offers: i.preco ? { '@type': 'Offer', price: i.preco, priceCurrency: 'BRL', availability: i.status === 'reservado' ? 'https://schema.org/LimitedAvailability' : 'https://schema.org/InStock' } : undefined,
     address: { '@type': 'PostalAddress', addressLocality: i.cidade, addressRegion: i.estado || 'BA', addressCountry: 'BR', streetAddress: [i.logradouro, i.numero].filter(Boolean).join(', ') || undefined } };
-  return `<!doctype html><html lang="pt-BR"><head>${head({ titulo: `${nome(i)} — ${brl(i.preco)} | ${C.nome}`, descricao, url, imagem: fotos[0], extra: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>` })}</head>
-<body data-pagina="imovel"><header class="topo" id="topo"></header>
+  return `<!doctype html><html lang="pt-BR"><head>${head({ titulo: `${nome(i)} — ${precoCurto} | ${C.nome}`, descricao, url, imagem: fotos[0], extra: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>` })}</head>
+<body data-pagina="imovel"${L ? ' data-lancamento' : ''}><header class="topo" id="topo"></header>
 <main class="wrap">
-  <nav class="trilha" aria-label="Você está em"><a href="/">Início</a> / <a href="/imoveis">Imóveis</a> / <a href="/imoveis?local=${encodeURIComponent('c:' + (i.cidade || ''))}">${esc(i.cidade || '')}</a> / Ref. ${esc(i.referencia)}</nav>
+  <nav class="trilha" aria-label="Você está em"><a href="/">Início</a> / ${L ? '<a href="/#empreendimentos">Lançamentos</a>' : '<a href="/imoveis">Imóveis</a>'} / <a href="/imoveis?local=${encodeURIComponent('c:' + (i.cidade || ''))}">${esc(i.cidade || '')}</a> / Ref. ${esc(i.referencia)}</nav>
   ${fotos.length ? `<div class="galeria">${fotos.slice(0, 3).map((u, k) => `<button type="button" class="${k === 0 ? 'g-principal' : ''}" data-foto="${k}" aria-label="Ampliar foto ${k + 1} de ${fotos.length}"><img src="${esc(u)}" alt="${k === 0 ? esc(nome(i)) : ''}" ${k ? 'loading="lazy"' : ''}>${k === Math.min(2, fotos.length - 1) && fotos.length > 1 ? `<span class="g-ver">Ver as ${fotos.length} fotos</span>` : ''}</button>`).join('')}</div>` : ''}
   <div class="detalhe">
     <article>
-      <h1>${esc(nome(i))}</h1>
+      ${L ? '<span class="selo-lanc-p">Lançamento</span>' : ''}<h1>${esc(nome(i))}</h1>
       <p class="local">${esc(local(i))}${i.logradouro ? ` · ${esc([i.logradouro, i.numero].filter(Boolean).join(', '))}` : ''}</p>
       ${numeros.length ? `<div class="numeros">${numeros.map(([v, l]) => `<div><b>${esc(v)}</b><span>${esc(l)}</span></div>`).join('')}</div>` : ''}
       ${i.descricao ? `<div class="bloco"><h2>Sobre o imóvel</h2><p class="descricao">${esc(i.descricao)}</p></div>` : ''}
@@ -59,12 +62,12 @@ function pagina(i, semelhantes) {
       ${i.latitude && i.longitude ? `<div class="bloco mapa"><h2>Localização</h2><iframe src="https://maps.google.com/maps?q=${i.latitude},${i.longitude}&z=15&output=embed" title="Mapa da região do imóvel" loading="lazy"></iframe><p class="local">A posição no mapa é aproximada.</p></div>` : ''}
     </article>
     <aside class="lateral" aria-label="Valor e contato">
-      <div class="valor">${brl(i.preco)}</div>${i.status === 'reservado' ? '<p class="ref"><b>Reservado</b> — fale com a gente para entrar na fila de interesse.</p>' : ''}
+      <div class="valor">${L ? (i.preco ? `<small>A partir de</small>${brl(i.preco)}` : 'Consulte valores') : brl(i.preco)}</div>${L ? '<p class="taxas">Tabela atualizada e condições de pagamento direto com a Residir.</p>' : ''}${i.status === 'reservado' ? '<p class="ref"><b>Reservado</b> — fale com a gente para entrar na fila de interesse.</p>' : ''}
       ${taxas ? `<p class="taxas">${esc(taxas)}</p>` : ''}
-      <a class="btn btn-wa" href="${esc(wa(msgWa))}" target="_blank" rel="noopener">Conversar pelo WhatsApp</a>
+      <a class="btn btn-wa" href="${esc(wa(msgWa))}" target="_blank" rel="noopener">${L ? 'Receber tabela pelo WhatsApp' : 'Conversar pelo WhatsApp'}</a>
       <hr><form class="form" data-contato novalidate><b>Prefere que a gente ligue?</b>
         <label>Nome<input name="nome" autocomplete="name" required></label><label>Celular com DDD<input name="celular" type="tel" inputmode="tel" autocomplete="tel" required></label>
-        <label>Mensagem (opcional)<textarea name="mensagem" rows="3">Tenho interesse neste imóvel.</textarea></label>
+        <label>Mensagem (opcional)<textarea name="mensagem" rows="3">${L ? 'Quero receber a tabela atualizada e as condições.' : 'Tenho interesse neste imóvel.'}</textarea></label>
         <input type="hidden" name="referencia" value="${esc(i.referencia)}"><input class="oculto" name="site" tabindex="-1" autocomplete="off" aria-hidden="true">
         <button class="btn btn-mar" type="submit">Quero receber contato</button><div class="form-msg" role="status" aria-live="polite"></div></form>
       <p class="ref">Ref. ${esc(i.referencia)} · valores sujeitos a alteração.</p>
@@ -73,7 +76,7 @@ function pagina(i, semelhantes) {
   ${semelhantes.length ? `<section class="secao" style="padding-top:0"><div class="secao-h"><h2>Outros imóveis em ${esc(i.cidade || 'região próxima')}</h2><a href="/imoveis?local=${encodeURIComponent('c:' + (i.cidade || ''))}">Ver todos</a></div><div class="grade" id="semelhantes"></div><script type="application/json" id="semelhantesJson">${JSON.stringify(semelhantes).replace(/</g, '\\u003c')}</script></section>` : ''}
 </main>
 <div class="visor" id="visor" role="dialog" aria-label="Fotos do imóvel"><button class="v-fechar" type="button" aria-label="Fechar">×</button><button class="v-ant" type="button" aria-label="Foto anterior">‹</button><img alt=""><button class="v-prox" type="button" aria-label="Próxima foto">›</button><span class="v-cont"></span></div>
-<div class="barra-movel"><div><b>${brl(i.preco)}</b><span>Ref. ${esc(i.referencia)}</span></div><a class="btn btn-wa" href="${esc(wa(msgWa))}" target="_blank" rel="noopener">WhatsApp</a></div>
+<div class="barra-movel"><div><b>${esc(precoCurto)}</b><span>Ref. ${esc(i.referencia)}</span></div><a class="btn btn-wa" href="${esc(wa(msgWa))}" target="_blank" rel="noopener">WhatsApp</a></div>
 <script type="application/json" id="fotosJson">${JSON.stringify(fotos).replace(/</g, '\\u003c')}</script>
 <script>document.addEventListener('DOMContentLoaded',function(){var s=document.getElementById('semelhantesJson');if(s&&window.RESIDIR){document.getElementById('semelhantes').innerHTML=JSON.parse(s.textContent).map(window.RESIDIR.cartao).join('');}});</script>
 <footer class="rodape" id="rodape"></footer></body></html>`;
