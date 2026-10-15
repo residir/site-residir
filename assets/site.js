@@ -59,6 +59,18 @@
     if (!$('.wa-fixo')) { var a = document.createElement('a'); a.className = 'wa-fixo'; a.href = waUrl('Olá! Vim pelo site da Residir.'); a.target = '_blank'; a.rel = 'noopener'; a.setAttribute('aria-label', 'Conversar no WhatsApp'); a.innerHTML = IC.wa; document.body.appendChild(a); }
   }
 
+  /* Formulário de contato → lead no CRM (com aviso por e-mail). Se a função de aviso falhar, grava direto no banco. */
+  function enviarContato(c) {
+    var direto = function () { return rpc('site_contato', { p_nome: c.nome, p_celular: c.celular, p_email: c.email, p_mensagem: c.mensagem, p_referencia: c.referencia, p_pagina: c.pagina, p_extra: c.site }); };
+    return fetch(C.supabaseUrl + '/functions/v1/site-contato', { method: 'POST', headers: { 'Content-Type': 'application/json', apikey: C.supabaseKey }, body: JSON.stringify(c) })
+      .then(function (r) {
+        return r.json().catch(function () { return null; }).then(function (j) {
+          if (r.ok && j && j.ok) return j;
+          if (r.status === 400 && j && j.erro) throw new Error(j.erro);
+          return direto();
+        });
+      }, function () { return direto(); });
+  }
   /* Formulário de contato → lead no CRM */
   function formularios() {
     $$('form[data-contato]').forEach(function (f) {
@@ -69,8 +81,8 @@
         if (!String(fd.get('nome') || '').trim()) { msg.className = 'form-msg erro'; msg.textContent = 'Informe seu nome.'; return; }
         if (String(fd.get('celular') || '').replace(/\D/g, '').length < 10) { msg.className = 'form-msg erro'; msg.textContent = 'Informe seu celular com DDD.'; return; }
         b.disabled = true; var txt = b.textContent; b.textContent = 'Enviando…';
-        rpc('site_contato', { p_nome: fd.get('nome'), p_celular: fd.get('celular'), p_email: fd.get('email') || '', p_mensagem: fd.get('mensagem') || '',
-          p_referencia: fd.get('referencia') || '', p_pagina: location.href, p_extra: fd.get('site') || '' })
+        enviarContato({ nome: fd.get('nome'), celular: fd.get('celular'), email: fd.get('email') || '', mensagem: fd.get('mensagem') || '',
+          referencia: fd.get('referencia') || '', pagina: location.href, site: fd.get('site') || '' })
           .then(function () {
             msg.className = 'form-msg ok';
             msg.innerHTML = 'Recebemos seu contato. Um corretor vai falar com você em breve. Prefere já conversar? <a href="' + waUrl('Olá! Acabei de enviar meu contato pelo site' + (fd.get('referencia') ? ' (imóvel ' + fd.get('referencia') + ')' : '') + '.') + '" target="_blank" rel="noopener">Abrir o WhatsApp</a>.';
