@@ -2,6 +2,10 @@
   "cleanUrls": true,
   "rewrites": [
     {
+      "source": "/logo/:t",
+      "destination": "/api/logo?t=:t"
+    },
+    {
       "source": "/imovel/:ref",
       "destination": "/api/imovel?ref=:ref"
     },
