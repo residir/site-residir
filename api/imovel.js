@@ -69,6 +69,7 @@ function pagina(i, semelhantes) {
         <label>Nome<input name="nome" autocomplete="name" required></label><label>Celular com DDD<input name="celular" type="tel" inputmode="tel" autocomplete="tel" required></label>
         <label>Mensagem (opcional)<textarea name="mensagem" rows="3">${L ? 'Quero receber a tabela atualizada e as condições.' : 'Tenho interesse neste imóvel.'}</textarea></label>
         <input type="hidden" name="referencia" value="${esc(i.referencia)}"><input class="oculto" name="site" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <p class="aviso-priv">Usamos seus dados só para responder ao seu contato. Saiba mais na <a href="/privacidade">Política de Privacidade</a>.</p>
         <button class="btn btn-mar" type="submit">Quero receber contato</button><div class="form-msg" role="status" aria-live="polite"></div></form>
       <p class="ref">Ref. ${esc(i.referencia)} · valores sujeitos a alteração.</p>
     </aside>
