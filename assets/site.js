@@ -47,6 +47,7 @@
     if (semMov) { marcar(); return; }
     criar();
   }
+  var SITE_VERSAO = '1.6.0'; /* versão do site (Versionamento Semântico) — ver CHANGELOG.md */
   var secaoDe = function (i) { return i.secao || (i.lancamento ? 'lancamento' : i.destaque ? 'destaque' : 'vitrine'); };
   var TIT_SEC = { destaque: 'Imóveis em destaque', vitrine: 'Imóveis', lancamento: 'Lançamentos' };
   var waUrl = function (txt) { return 'https://wa.me/' + C.whatsapp + '?text=' + encodeURIComponent(txt); };
@@ -94,7 +95,7 @@
     if (r) r.innerHTML = '<div class="wrap"><div><b>' + esc(C.nome) + '</b><p>Imóveis à venda no Litoral Norte da Bahia, em Salvador e região.</p>' + (C.creci ? '<p>' + esc(C.creci) + '</p>' : '') + '</div>' +
       '<div><p><b style="font-size:1rem">Atendimento</b></p><p><a class="rod-wa" href="' + waUrl('Olá! Vim pelo site da Residir.') + '" target="_blank" rel="noopener" aria-label="Conversar no WhatsApp: ' + esc(C.telefoneExibicao) + '"><span class="rod-wa-ic">' + IC.wa + '</span>' + esc(C.telefoneExibicao) + '</a>' + (C.email ? '<br><a href="mailto:' + esc(C.email) + '">' + esc(C.email) + '</a>' : '') + (C.endereco ? '<br>' + esc(C.endereco) : '') + '</p></div>' +
       '<div><p><b style="font-size:1rem">Navegue</b></p><p><a href="/imoveis?secao=destaque">Imóveis em destaque</a><br><a href="/imoveis">Imóveis</a><br><a href="/imoveis?secao=lancamento">Lançamentos</a>' + (C.instagram ? '<br><a href="https://instagram.com/' + esc(C.instagram) + '" target="_blank" rel="noopener">Instagram</a>' : '') + '</p></div>' +
-      '<small>© ' + new Date().getFullYear() + ' ' + esc(C.nome) + '. Valores e disponibilidade sujeitos a alteração sem aviso.</small></div>';
+      '<small>© ' + new Date().getFullYear() + ' ' + esc(C.nome) + '. Valores e disponibilidade sujeitos a alteração sem aviso. <span class="rod-versao" title="Versão do site">v' + SITE_VERSAO + '</span></small></div>';
     if (!$('.wa-fixo')) { var a = document.createElement('a'); a.className = 'wa-fixo'; a.href = waUrl('Olá! Vim pelo site da Residir.'); a.target = '_blank'; a.rel = 'noopener'; a.setAttribute('aria-label', 'Conversar no WhatsApp'); a.innerHTML = IC.wa; document.body.appendChild(a); }
   }
 

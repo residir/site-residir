@@ -191,3 +191,5 @@ select:focus,input:focus,textarea:focus{border-color:var(--mar);outline:none;box
 .capa-pausa{position:absolute;right:16px;top:16px;z-index:3;width:40px;height:40px;border-radius:999px;border:1px solid rgba(255,255,255,.55);background:rgba(6,34,37,.55);color:#fff;display:grid;place-items:center;cursor:pointer}
 .capa-pausa:hover{background:rgba(6,34,37,.8)}.capa-pausa:focus-visible{outline:3px solid var(--sol);outline-offset:2px}
 @media (prefers-reduced-motion: reduce){.capa-video{transition:none}}
+/* versão do site no rodapé */
+.rod-versao{margin-left:8px;opacity:.6;font-size:.72rem;letter-spacing:.02em;white-space:nowrap}
