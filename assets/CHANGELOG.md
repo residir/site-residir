@@ -20,6 +20,12 @@ Cada versão informa o **script mínimo do banco** (pasta `supabase/` do CRM) e 
 
 ---
 
+## [1.8.1] — 19/10/2026
+**Requer:** banco até `29-perfil-busca.sql` · entregue com o CRM 3.51.0
+
+### Alterado
+- A página do imóvel mostra a descrição com a formatação feita no CRM (negrito, itálico, sublinhado, listas e links) e os emojis. Qualquer outra marcação é descartada por segurança; descrições em texto simples continuam como antes.
+
 ## [1.8.0] — 15/10/2026
 **Requer:** banco até `28-logo-site.sql` · sem mudança no CRM
 

@@ -208,3 +208,4 @@ select:focus,input:focus,textarea:focus{border-color:var(--mar);outline:none;box
 .politica p,.politica li{line-height:1.65}.politica ul{padding-left:22px}.politica li{margin:4px 0}
 .aviso-priv{font-size:.82rem;color:var(--tinta-2);margin:2px 0 8px}.aviso-priv a{color:inherit}
 .rod-priv{color:#D6EBE9;margin-left:6px;white-space:nowrap}
+.descricao.rt{white-space:normal}.descricao.rt p,.descricao.rt div{margin:0 0 .5em}.descricao.rt ul,.descricao.rt ol{margin:.3em 0 .6em 1.2em;padding:0}.descricao.rt li{margin:.15em 0}
