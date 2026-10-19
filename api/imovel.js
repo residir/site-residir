@@ -15,6 +15,22 @@ async function rpc(fn, corpo) {
   return r.json();
 }
 
+// descrição com formatação vinda do CRM (negrito, itálico, sublinhado, listas, links); qualquer outra marcação é descartada
+function descHTML(t) {
+  t = String(t || '');
+  if (!/<(b|i|u|ol|ul|li|a|br|div|p)\b/i.test(t)) return `<p class="descricao">${esc(t)}</p>`;
+  let h = t.replace(/<(script|style|iframe|object|embed|svg|math)[\s\S]*?<\/\1>/gi, '');
+  h = h.replace(/<\/?([a-z0-9]+)([^>]*)>/gi, (m, tag, attrs) => {
+    tag = tag.toLowerCase(); const fecha = m[1] === '/';
+    if (['b', 'strong', 'i', 'em', 'u', 'ul', 'ol', 'li', 'p', 'div'].includes(tag)) return fecha ? `</${tag}>` : `<${tag}>`;
+    if (tag === 'br') return '<br>';
+    if (tag === 'a') { if (fecha) return '</a>'; const hr = attrs.match(/href\s*=\s*"([^"]*)"|href\s*=\s*'([^']*)'/i) || []; const u = (hr[1] || hr[2] || '').replace(/&amp;/g, '&');
+      return /^(https?:|mailto:|tel:)/i.test(u) ? `<a href="${esc(u)}" target="_blank" rel="noopener nofollow">` : '<a>'; }
+    return '';
+  });
+  return `<div class="descricao rt">${h}</div>`;
+}
+
 function head({ titulo, descricao, url, imagem, extra = '' }) {
   return `<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#0B4A50">
 <title>${esc(titulo)}</title><meta name="description" content="${esc(descricao)}"><link rel="canonical" href="${esc(url)}">
@@ -53,10 +69,10 @@ function pagina(i, semelhantes) {
       ${L ? '<span class="selo-lanc-p">Lançamento</span>' : ''}<h1>${esc(nome(i))}</h1>
       <p class="local">${esc(local(i))}${i.logradouro ? ` · ${esc([i.logradouro, i.numero].filter(Boolean).join(', '))}` : ''}</p>
       ${numeros.length ? `<div class="numeros">${numeros.map(([v, l]) => `<div><b>${esc(v)}</b><span>${esc(l)}</span></div>`).join('')}</div>` : ''}
-      ${i.descricao ? `<div class="bloco"><h2>Sobre o imóvel</h2><p class="descricao">${esc(i.descricao)}</p></div>` : ''}
+      ${i.descricao ? `<div class="bloco"><h2>Sobre o imóvel</h2>${descHTML(i.descricao)}</div>` : ''}
       <div class="bloco"><h2>Ficha do imóvel</h2><dl class="ficha">${ficha.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl></div>
       ${etiquetas('Características', i.caracteristicas)}${etiquetas('No condomínio', i.caracteristicas_condominio)}${etiquetas('Por perto', i.proximidades)}
-      ${i.descricao_condominio ? `<div class="bloco"><h2>Sobre o condomínio</h2><p class="descricao">${esc(i.descricao_condominio)}</p></div>` : ''}
+      ${i.descricao_condominio ? `<div class="bloco"><h2>Sobre o condomínio</h2>${descHTML(i.descricao_condominio)}</div>` : ''}
       ${i.video ? `<div class="bloco video"><h2>Vídeo</h2><iframe src="${esc(i.video)}" title="Vídeo do imóvel" loading="lazy" allowfullscreen></iframe></div>` : ''}
       ${i.tour360 ? `<p class="bloco"><a class="btn btn-linha" href="${esc(i.tour360)}" target="_blank" rel="noopener">Fazer o tour 360°</a></p>` : ''}
       ${i.latitude && i.longitude ? `<div class="bloco mapa"><h2>Localização</h2><iframe src="https://maps.google.com/maps?q=${i.latitude},${i.longitude}&z=15&output=embed" title="Mapa da região do imóvel" loading="lazy"></iframe><p class="local">A posição no mapa é aproximada.</p></div>` : ''}
