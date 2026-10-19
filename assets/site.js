@@ -47,7 +47,7 @@
     if (semMov) { marcar(); return; }
     criar();
   }
-  var SITE_VERSAO = '1.8.1';
+  var SITE_VERSAO = '1.9.0';
   /* logo do site, configurada no CRM (Ajustes › Logo do site) */
   function identCache() { try { var c = JSON.parse(localStorage.getItem('res_ident') || 'null'); return c && c.d ? c : null; } catch (_) { return null; } }
   function logoHTML(L, onde) {
@@ -107,6 +107,7 @@
   function moldura() {
     var pag = document.body.getAttribute('data-pagina') || '', lancPag = document.body.hasAttribute('data-lancamento');
     var t = $('#topo');
+    if (t && !$('.compromisso')) t.insertAdjacentHTML('beforebegin', '<div class="compromisso"><div class="wrap"><p><span aria-hidden="true">✦</span> Compromisso com a <b>verdade</b>, a <b>ética</b> e a <b>satisfação do cliente</b>.</p></div></div>');
     if (t) t.innerHTML = '<div class="wrap"><a class="marca" href="/" aria-label="' + esc(C.nome) + ', página inicial"><b>Residir</b><span>Imobiliária</span></a>' +
       '<nav class="menu" aria-label="Principal"><a href="/imoveis?secao=destaque" data-m="destaque">Imóveis em destaque</a><a href="/imoveis" data-m="vitrine">Imóveis</a><a href="/imoveis?secao=lancamento" data-m="lancamento">Lançamentos</a><a href="/#contato">Fale conosco</a></nav>' +
       '<a class="btn btn-wa" href="' + waUrl('Olá! Vim pelo site da Residir e gostaria de atendimento.') + '" target="_blank" rel="noopener">' + IC.wa + '<span>WhatsApp</span></a></div>';
@@ -254,6 +255,17 @@
     $('.v-fechar', v).addEventListener('click', function () { v.classList.remove('aberto'); });
     $('.v-ant', v).addEventListener('click', function () { mostrar(k - 1); });
     $('.v-prox', v).addEventListener('click', function () { mostrar(k + 1); });
+    /* deslizar o dedo para passar as fotos (visor e foto principal no celular) */
+    function deslizar(el, ant, prox) { var x0 = null, y0 = 0; el.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+      el.addEventListener('touchend', function (e) { if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; x0 = null; if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) { e.preventDefault(); dx < 0 ? prox() : ant(); } }); }
+    deslizar(v, function () { mostrar(k - 1); }, function () { mostrar(k + 1); });
+    /* celular: setas e contador sobre a foto principal da página, sem precisar abrir o visor */
+    var g = $('.galeria'), gp = g && $('.g-principal', g);
+    if (g && gp && fotos.length > 1) { var gk = 0, gimg = $('img', gp);
+      g.insertAdjacentHTML('beforeend', '<button type="button" class="g-seta g-ant" aria-label="Foto anterior"><svg viewBox=\"0 0 24 24\" width=\"26\" height=\"26\" aria-hidden=\"true\"><path d=\"M15 5l-7 7 7 7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></button><button type="button" class="g-seta g-prox" aria-label="Próxima foto"><svg viewBox=\"0 0 24 24\" width=\"26\" height=\"26\" aria-hidden=\"true\"><path d=\"M9 5l7 7-7 7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></button><span class="g-cont" aria-live="polite">1 / ' + fotos.length + '</span>');
+      var ir = function (n) { gk = (n + fotos.length) % fotos.length; gimg.src = fotos[gk]; gp.setAttribute('data-foto', gk); $('.g-cont', g).textContent = (gk + 1) + ' / ' + fotos.length; var pre = new Image(); pre.src = fotos[(gk + 1) % fotos.length]; };
+      $('.g-ant', g).addEventListener('click', function () { ir(gk - 1); }); $('.g-prox', g).addEventListener('click', function () { ir(gk + 1); });
+      deslizar(gp, function () { ir(gk - 1); }, function () { ir(gk + 1); }); }
     document.addEventListener('keydown', function (e) { if (!v.classList.contains('aberto')) return; if (e.key === 'Escape') v.classList.remove('aberto'); if (e.key === 'ArrowLeft') mostrar(k - 1); if (e.key === 'ArrowRight') mostrar(k + 1); });
   }
 

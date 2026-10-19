@@ -209,3 +209,26 @@ select:focus,input:focus,textarea:focus{border-color:var(--mar);outline:none;box
 .aviso-priv{font-size:.82rem;color:var(--tinta-2);margin:2px 0 8px}.aviso-priv a{color:inherit}
 .rod-priv{color:#D6EBE9;margin-left:6px;white-space:nowrap}
 .descricao.rt{white-space:normal}.descricao.rt p,.descricao.rt div{margin:0 0 .5em}.descricao.rt ul,.descricao.rt ol{margin:.3em 0 .6em 1.2em;padding:0}.descricao.rt li{margin:.15em 0}
+/* faixa de compromisso (canto superior direito) */
+.compromisso{background:var(--mar);color:#EAF4F2;border-bottom:2px solid var(--sol)}
+.compromisso .wrap{display:flex;justify-content:flex-end}
+.compromisso p{margin:0;padding:7px 0;font-size:.86rem;letter-spacing:.01em;text-align:right}
+.compromisso b{color:var(--sol);font-weight:700}.compromisso span{color:var(--sol);margin-right:4px}
+@media (max-width:760px){.compromisso .wrap{justify-content:center}.compromisso p{font-size:.76rem;text-align:center;padding:6px 0;line-height:1.35}}
+/* setas das fotos: mais visíveis, principalmente no celular */
+.visor button.v-ant,.visor button.v-prox{top:50%;transform:translateY(-50%);width:54px;height:54px;background:rgba(255,255,255,.95);color:var(--mar);display:grid;place-items:center;box-shadow:0 4px 16px rgba(0,0,0,.35)}
+.visor button.v-ant:hover,.visor button.v-prox:hover{background:#fff}
+.visor button:focus-visible{outline:3px solid var(--sol);outline-offset:2px}
+.visor .v-fechar{background:rgba(255,255,255,.95);color:var(--mar);font-size:1.8rem;line-height:1}
+.visor .v-cont{background:rgba(0,0,0,.55);padding:5px 12px;border-radius:999px;font-weight:700}
+.galeria{position:relative}
+.g-seta,.g-cont{display:none}
+@media (max-width:760px){
+  .visor img{max-width:100vw;max-height:78vh;border-radius:0}
+  .visor button.v-ant{left:8px}.visor button.v-prox{right:8px}
+  .visor button.v-ant,.visor button.v-prox{width:48px;height:48px}
+  .galeria button.g-seta{display:grid;place-items:center;position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:44px;height:44px;border:0;border-radius:999px;background:rgba(255,255,255,.95);color:var(--mar);box-shadow:0 3px 12px rgba(0,0,0,.3);cursor:pointer}
+  .galeria .g-ant{left:10px}.galeria .g-prox{right:10px}
+  .galeria .g-cont{display:block;position:absolute;left:12px;bottom:12px;z-index:2;background:rgba(0,0,0,.6);color:#fff;font-size:.8rem;font-weight:700;padding:4px 10px;border-radius:999px}
+  .galeria .g-ver{bottom:12px;right:12px}
+}
