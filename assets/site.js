@@ -47,7 +47,7 @@
     if (semMov) { marcar(); return; }
     criar();
   }
-  var SITE_VERSAO = '1.9.0';
+  var SITE_VERSAO = '1.10.0';
   /* logo do site, configurada no CRM (Ajustes › Logo do site) */
   function identCache() { try { var c = JSON.parse(localStorage.getItem('res_ident') || 'null'); return c && c.d ? c : null; } catch (_) { return null; } }
   function logoHTML(L, onde) {
@@ -124,6 +124,48 @@
   function marcarMenu(sec) { $$('.menu [data-m]').forEach(function (a) { if (a.getAttribute('data-m') === sec) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }); }
 
   /* Formulário de contato → lead no CRM (com aviso por e-mail). Se a função de aviso falhar, grava direto no banco. */
+  /* Origem da visita: de onde o visitante veio (guardada no navegador por 90 dias e enviada com o contato) */
+  function origemCanal(ref, u, clid) {
+    var s = (u.utm_source || '').toLowerCase(), m = (u.utm_medium || '').toLowerCase();
+    if (u.utm_source || clid) {
+      if (/facebook|^fb$|instagram|^ig$|meta/.test(s) || clid === 'fbclid') return (/paid|cpc|ads?$|pago|social_paid/.test(m) || clid === 'fbclid' || u.utm_content) ? 'Anúncio Meta (Facebook/Instagram)' : (/instagram|^ig$/.test(s) ? 'Instagram' : 'Facebook');
+      if (/google/.test(s) || clid === 'gclid') return (/cpc|paid|ads/.test(m) || clid === 'gclid') ? 'Google Ads' : 'Google';
+      return 'Campanha: ' + u.utm_source;
+    }
+    if (!ref) return 'Acesso direto';
+    if (/(^|\.)google\./.test(ref)) return 'Google (busca)';
+    if (/bing\.|yahoo\.|duckduckgo\.|ecosia\./.test(ref)) return 'Outros buscadores';
+    if (/instagram\.com$/.test(ref)) return 'Instagram';
+    if (/(facebook\.com|fb\.com|fb\.me)$/.test(ref)) return 'Facebook';
+    if (/whatsapp|wa\.me/.test(ref)) return 'WhatsApp';
+    if (/youtube\.com$|youtu\.be$/.test(ref)) return 'YouTube';
+    if (/tiktok\.com$/.test(ref)) return 'TikTok';
+    if (/linkedin\.com$|lnkd\.in$/.test(ref)) return 'LinkedIn';
+    if (/gabrielpintoimoveis\.com\.br$/.test(ref)) return 'Site Gabriel Pinto';
+    if (/tecimob/.test(ref)) return 'Site no Tecimob';
+    return 'Outro site (' + ref + ')';
+  }
+  function origemRegistrar() {
+    var agora = Date.now(), q = new URLSearchParams(location.search), ref = '';
+    try { ref = document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, '') : ''; } catch (_) {}
+    var interno = ref && (ref === location.hostname.replace(/^www\./, '') || /residirimobiliaria\.com\.br$/.test(ref));
+    var u = {}; ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'utm_id'].forEach(function (k) { var v = q.get(k); if (v) u[k] = v.slice(0, 150); });
+    var clid = q.get('fbclid') ? 'fbclid' : q.get('gclid') ? 'gclid' : '';
+    var st = null; try { st = JSON.parse(localStorage.getItem('res_origem') || 'null'); } catch (_) {}
+    if (st && agora - (st.em || 0) > 90 * 864e5) st = null;
+    var nova = false; try { nova = !sessionStorage.getItem('res_sessao'); sessionStorage.setItem('res_sessao', '1'); } catch (_) {}
+    if (interno && !Object.keys(u).length && !clid) { if (st && nova) { st.visitas = (st.visitas || 1) + 1; st.em = agora; } }
+    else {
+      var canal = origemCanal(interno ? '' : ref, u, clid);
+      var t = { canal: canal, ref: interno ? '' : ref, entrada: (location.pathname + location.search).slice(0, 200), em: agora };
+      if (Object.keys(u).length) t.utm = u; if (clid) t.clique = clid;
+      if (!st) st = { primeira: t, ultima: t, visitas: 1, em: agora };
+      else { if (canal !== 'Acesso direto' || !st.ultima) st.ultima = t; if (nova) st.visitas = (st.visitas || 1) + 1; st.em = agora; }
+    }
+    if (st) { try { localStorage.setItem('res_origem', JSON.stringify(st)); } catch (_) {} }
+    return st;
+  }
+  var ORIGEM = origemRegistrar();
   function enviarContato(c) {
     var direto = function () { return rpc('site_contato', { p_nome: c.nome, p_celular: c.celular, p_email: c.email, p_mensagem: c.mensagem, p_referencia: c.referencia, p_pagina: c.pagina, p_extra: c.site }); };
     return fetch(C.supabaseUrl + '/functions/v1/site-contato', { method: 'POST', headers: { 'Content-Type': 'application/json', apikey: C.supabaseKey }, body: JSON.stringify(c) })
@@ -148,6 +190,7 @@
         enviarContato({ nome: fd.get('nome'), celular: fd.get('celular'), email: fd.get('email') || '', mensagem: fd.get('mensagem') || '',
           referencia: fd.get('referencia') || '', pagina: location.href, site: fd.get('site') || '' })
           .then(function () {
+            if (ORIGEM) { var o = JSON.parse(JSON.stringify(ORIGEM)); o.contato = { pagina: location.pathname.slice(0, 200), em: Date.now() }; setTimeout(function () { rpc('site_origem', { p_celular: fd.get('celular'), p_origem: o }).catch(function () {}); }, 300); }
             msg.className = 'form-msg ok';
             msg.innerHTML = 'Recebemos seu contato. Um corretor vai falar com você em breve. Prefere já conversar? <a href="' + waUrl('Olá! Acabei de enviar meu contato pelo site' + (fd.get('referencia') ? ' (imóvel ' + fd.get('referencia') + ')' : '') + '.') + '" target="_blank" rel="noopener">Abrir o WhatsApp</a>.';
             f.reset();
