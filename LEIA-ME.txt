@@ -16,7 +16,8 @@ PUBLICAR (uma vez)
 5. Em alguns minutos o site abre em https://residirimobiliaria.com.br.
 
 O QUE O SITE TEM
-- Página inicial: busca, bairros com imóveis, destaques, lançamentos e contato.
+- Página inicial: busca, bairros com imóveis, as seções Imóveis em destaque, Imóveis e Lançamentos, e contato.
+- Menu: Imóveis em destaque, Imóveis e Lançamentos, que abrem a vitrine já filtrada (ex.: /imoveis?secao=lancamento).
 - /imoveis: vitrine com filtros (tipo, cidade/bairro, dormitórios, vagas, valor, busca).
 - /imovel/REFERENCIA: página de cada imóvel (galeria, ficha, características, mapa aproximado, vídeo),
   preparada para o Google e para a prévia com foto no WhatsApp.
@@ -26,10 +27,20 @@ O QUE O SITE TEM
 
 O QUE APARECE NO SITE
 - Imóveis "Disponível" ou "Reservado" marcados "Mostrar no site" (CRM > Imóveis > Editar).
-- "Destaque na página inicial" escolhe os imóveis da seção de destaques.
+- "Na página inicial do site" (CRM > Imóveis > Editar) escolhe a seção: Imóveis em destaque, Lançamentos ou Só na vitrine.
+  Os lançamentos aparecem com foto e abrem a página completa, com galeria e pedido de tabela.
+- Logo do topo, do rodapé, de compartilhamento e favicon: CRM > Ajustes > Logo do site (o site atualiza em até 10 minutos).
+- Vídeo na capa: no CRM, marque "Rodar vídeo na capa do site" no imóvel (YouTube, Vimeo ou MP4 enviado pelo CRM).
+- A ordem dos imóveis em cada seção é definida no CRM > Imóveis > Ordem no site (na vitrine, "Recomendados").
+- Imóveis arquivados no CRM saem do site. Empreendimentos só aparecem (cartão com logo) se marcados "Mostrar no site".
 - Rua, número e mapa só aparecem se marcados no imóvel; o mapa mostra posição aproximada.
 - Proprietário, observações privadas, comissão e anotações nunca saem do CRM.
 
 ALTERAR TEXTOS OU CONTATOS
 - Contatos: config.js. Textos da página inicial: index.html. Visual: assets/site.css.
 - Depois de alterar, envie o arquivo ao GitHub; a Vercel publica sozinha.
+
+VERSÃO
+- Versão atual: 1.10.0 (aparece no rodapé, ex.: "v1.10.0").
+- Política de Privacidade: privacidade.html (endereço /privacidade). Atualize a data no topo da página sempre que mudar o texto. Histórico completo em CHANGELOG.md.
+- Ao publicar uma nova versão, atualize SITE_VERSAO em assets/site.js e registre a mudança no CHANGELOG.md.

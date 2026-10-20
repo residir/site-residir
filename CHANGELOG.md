@@ -20,6 +20,47 @@ Cada versão informa o **script mínimo do banco** (pasta `supabase/` do CRM) e 
 
 ---
 
+## [1.10.0] — 19/10/2026
+**Requer:** banco até `31-origem-visita.sql` · entregue com o CRM 3.54.0
+
+### Adicionado
+- **Origem da visita**: o site identifica de onde o visitante veio — Google (busca), Instagram, Facebook, WhatsApp, YouTube, outro site, acesso direto ou anúncio (Meta ou Google, pelas UTMs e pelos identificadores de clique) — e guarda no navegador por 90 dias a **primeira** e a **última** origem, a página de entrada e o número de visitas. Acessos diretos não apagam uma origem já conhecida.
+- Ao enviar o formulário de contato, a origem é registrada no lead do CRM (`site_origem`).
+### Alterado
+- Política de Privacidade: informa o registro da origem da visita (atualizada em 19/10/2026).
+
+## [1.9.0] — 19/10/2026
+**Requer:** banco até `30-imoveis-escopo.sql` · entregue com o CRM 3.52.1
+
+### Adicionado
+- Faixa no topo de todas as páginas, com o texto destacado no canto superior direito: “✦ Compromisso com a **verdade**, a **ética** e a **satisfação do cliente**.” (centralizado no celular).
+- Página do imóvel no celular: **setas e contador** (“3 / 12”) sobre a foto principal, para passar as fotos sem abrir o visor, e passagem das fotos **deslizando o dedo**.
+### Alterado
+- Visor de fotos: setas maiores, brancas e com sombra, centralizadas na altura da foto (antes eram quase transparentes e difíceis de ver no celular); contador em destaque e passagem deslizando o dedo.
+
+## [1.8.1] — 19/10/2026
+**Requer:** banco até `29-perfil-busca.sql` · entregue com o CRM 3.51.0
+
+### Alterado
+- A página do imóvel mostra a descrição com a formatação feita no CRM (negrito, itálico, sublinhado, listas e links) e os emojis. Qualquer outra marcação é descartada por segurança; descrições em texto simples continuam como antes.
+
+## [1.8.0] — 15/10/2026
+**Requer:** banco até `28-logo-site.sql` · sem mudança no CRM
+
+### Adicionado
+- Página **Política de Privacidade** (`/privacidade`), conforme a LGPD: responsável pelos dados, dados coletados, finalidades, bases legais, compartilhamento com fornecedores, prazo de guarda, segurança, direitos do titular e canal de atendimento.
+- Link “Política de Privacidade” no rodapé de todas as páginas e aviso curto com o link nos formulários de contato (página inicial e página de cada imóvel).
+- `/privacidade` incluída no mapa do site (`/sitemap.xml`).
+
+## [1.7.0] — 15/10/2026
+**Requer:** banco até `28-logo-site.sql` · entregue com o CRM 3.40.0
+
+### Adicionado
+- Logo no topo e no rodapé configurada no CRM (Ajustes › Logo do site), com imagens e alturas diferentes para computador e celular. Sem logo configurada, o site mantém o nome em texto.
+- Imagem de compartilhamento (prévia no WhatsApp, Facebook e Instagram) da página inicial, da vitrine e dos imóveis sem foto, em `/logo/compartilhar` (1200 × 630).
+- Ícone da aba do navegador e do atalho no celular (`/logo/favicon` e `/logo/apple`), com o ícone anterior como reserva.
+- A logo fica guardada no navegador do visitante por 10 minutos, para aparecer sem atraso ao trocar de página.
+
 ## [1.6.2] — 15/10/2026
 **Requer:** banco até `27-video-capa.sql` · sem mudança no CRM
 
