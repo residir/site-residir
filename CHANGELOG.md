@@ -20,6 +20,13 @@ Cada versão informa o **script mínimo do banco** (pasta `supabase/` do CRM) e 
 
 ---
 
+## [1.10.1] — 19/10/2026
+**Requer:** banco até `32-origem-visita-garantida.sql` · entregue com o CRM 3.54.2
+
+### Corrigido
+- A origem da visita podia não chegar ao lead: agora é enviada **antes** do contato (fica guardada no banco pelo celular e é aplicada quando o lead é criado) e de novo **depois** (para leads que já existiam).
+- Quem já estava navegando no site antes da atualização passa a ter a origem registrada como “Não identificada”, em vez de nenhuma.
+
 ## [1.10.0] — 19/10/2026
 **Requer:** banco até `31-origem-visita.sql` · entregue com o CRM 3.54.0
 
