@@ -47,7 +47,7 @@
     if (semMov) { marcar(); return; }
     criar();
   }
-  var SITE_VERSAO = '1.10.0';
+  var SITE_VERSAO = '1.10.1';
   /* logo do site, configurada no CRM (Ajustes › Logo do site) */
   function identCache() { try { var c = JSON.parse(localStorage.getItem('res_ident') || 'null'); return c && c.d ? c : null; } catch (_) { return null; } }
   function logoHTML(L, onde) {
@@ -154,7 +154,7 @@
     var st = null; try { st = JSON.parse(localStorage.getItem('res_origem') || 'null'); } catch (_) {}
     if (st && agora - (st.em || 0) > 90 * 864e5) st = null;
     var nova = false; try { nova = !sessionStorage.getItem('res_sessao'); sessionStorage.setItem('res_sessao', '1'); } catch (_) {}
-    if (interno && !Object.keys(u).length && !clid) { if (st && nova) { st.visitas = (st.visitas || 1) + 1; st.em = agora; } }
+    if (interno && !Object.keys(u).length && !clid) { if (st && nova) { st.visitas = (st.visitas || 1) + 1; st.em = agora; } else if (!st) { var ti = { canal: 'Não identificada (navegação já iniciada no site)', ref: '', entrada: (location.pathname + location.search).slice(0, 200), em: agora }; st = { primeira: ti, ultima: ti, visitas: 1, em: agora }; } }
     else {
       var canal = origemCanal(interno ? '' : ref, u, clid);
       var t = { canal: canal, ref: interno ? '' : ref, entrada: (location.pathname + location.search).slice(0, 200), em: agora };
@@ -187,10 +187,12 @@
         if (!String(fd.get('nome') || '').trim()) { msg.className = 'form-msg erro'; msg.textContent = 'Informe seu nome.'; return; }
         if (String(fd.get('celular') || '').replace(/\D/g, '').length < 10) { msg.className = 'form-msg erro'; msg.textContent = 'Informe seu celular com DDD.'; return; }
         b.disabled = true; var txt = b.textContent; b.textContent = 'Enviando…';
-        enviarContato({ nome: fd.get('nome'), celular: fd.get('celular'), email: fd.get('email') || '', mensagem: fd.get('mensagem') || '',
-          referencia: fd.get('referencia') || '', pagina: location.href, site: fd.get('site') || '' })
+        var oEnv = ORIGEM ? JSON.parse(JSON.stringify(ORIGEM)) : null; if (oEnv) { oEnv.contato = { pagina: location.pathname.slice(0, 200), em: Date.now() }; }
+        var origemAntes = oEnv ? rpc('site_origem', { p_celular: fd.get('celular'), p_origem: oEnv }).catch(function () {}) : Promise.resolve();
+        origemAntes.then(function () { return enviarContato({ nome: fd.get('nome'), celular: fd.get('celular'), email: fd.get('email') || '', mensagem: fd.get('mensagem') || '',
+          referencia: fd.get('referencia') || '', pagina: location.href, site: fd.get('site') || '', origem: oEnv }); })
           .then(function () {
-            if (ORIGEM) { var o = JSON.parse(JSON.stringify(ORIGEM)); o.contato = { pagina: location.pathname.slice(0, 200), em: Date.now() }; setTimeout(function () { rpc('site_origem', { p_celular: fd.get('celular'), p_origem: o }).catch(function () {}); }, 300); }
+            if (oEnv) setTimeout(function () { rpc('site_origem', { p_celular: fd.get('celular'), p_origem: oEnv }).catch(function () {}); }, 400);
             msg.className = 'form-msg ok';
             msg.innerHTML = 'Recebemos seu contato. Um corretor vai falar com você em breve. Prefere já conversar? <a href="' + waUrl('Olá! Acabei de enviar meu contato pelo site' + (fd.get('referencia') ? ' (imóvel ' + fd.get('referencia') + ')' : '') + '.') + '" target="_blank" rel="noopener">Abrir o WhatsApp</a>.';
             f.reset();
