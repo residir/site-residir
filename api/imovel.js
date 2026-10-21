@@ -31,6 +31,19 @@ function descHTML(t) {
   return `<div class="descricao rt">${h}</div>`;
 }
 
+// vídeo do imóvel: links do YouTube (vídeo, Shorts, youtu.be, ao vivo), Vimeo ou arquivo de vídeo viram o player certo
+function videoHTML(url) {
+  const u = String(url || '').trim(); let m;
+  if ((m = u.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/|v\/)|youtu\.be\/)([\w-]{11})/i))) {
+    const vertical = /\/shorts\//i.test(u);
+    return `<div class="video-box${vertical ? ' vertical' : ''}"><iframe src="https://www.youtube-nocookie.com/embed/${m[1]}?rel=0&modestbranding=1&playsinline=1" title="Vídeo do imóvel" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>`;
+  }
+  if ((m = u.match(/vimeo\.com\/(?:video\/)?(\d+)/i))) return `<div class="video-box"><iframe src="https://player.vimeo.com/video/${m[1]}" title="Vídeo do imóvel" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>`;
+  if (/^https:\/\/\S+\.(mp4|webm|mov)(\?\S*)?$/i.test(u)) return `<div class="video-box"><video src="${esc(u)}" controls playsinline preload="metadata"></video></div>`;
+  if (/^https?:\/\//i.test(u)) return `<p><a class="btn btn-mar" href="${esc(u)}" target="_blank" rel="noopener">Assistir ao vídeo</a></p>`;
+  return '';
+}
+
 function head({ titulo, descricao, url, imagem, extra = '' }) {
   return `<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#0B4A50">
 <title>${esc(titulo)}</title><meta name="description" content="${esc(descricao)}"><link rel="canonical" href="${esc(url)}">
@@ -73,7 +86,7 @@ function pagina(i, semelhantes) {
       <div class="bloco"><h2>Ficha do imóvel</h2><dl class="ficha">${ficha.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl></div>
       ${etiquetas('Características', i.caracteristicas)}${etiquetas('No condomínio', i.caracteristicas_condominio)}${etiquetas('Por perto', i.proximidades)}
       ${i.descricao_condominio ? `<div class="bloco"><h2>Sobre o condomínio</h2>${descHTML(i.descricao_condominio)}</div>` : ''}
-      ${i.video ? `<div class="bloco video"><h2>Vídeo</h2><iframe src="${esc(i.video)}" title="Vídeo do imóvel" loading="lazy" allowfullscreen></iframe></div>` : ''}
+      ${i.video && videoHTML(i.video) ? `<div class="bloco video"><h2>Vídeo</h2>${videoHTML(i.video)}</div>` : ''}
       ${i.tour360 ? `<p class="bloco"><a class="btn btn-linha" href="${esc(i.tour360)}" target="_blank" rel="noopener">Fazer o tour 360°</a></p>` : ''}
       ${i.latitude && i.longitude ? `<div class="bloco mapa"><h2>Localização</h2><iframe src="https://maps.google.com/maps?q=${i.latitude},${i.longitude}&z=15&output=embed" title="Mapa da região do imóvel" loading="lazy"></iframe><p class="local">A posição no mapa é aproximada.</p></div>` : ''}
     </article>
