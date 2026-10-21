@@ -20,6 +20,12 @@ Cada versão informa o **script mínimo do banco** (pasta `supabase/` do CRM) e 
 
 ---
 
+## [1.10.2] — 21/10/2026
+**Requer:** banco até `33-corrige-campanha.sql` · sem mudança no CRM
+
+### Corrigido
+- **Vídeo do imóvel não aparecia** (“A conexão com www.youtube.com foi recusada”): o link do YouTube era colocado direto na página, e o YouTube não permite isso. Agora links do YouTube (vídeo comum, **Shorts**, youtu.be e ao vivo), do Vimeo e de arquivos de vídeo viram o player correto; Shorts aparecem na vertical. Outros links viram o botão “Assistir ao vídeo”.
+
 ## [1.10.1] — 19/10/2026
 **Requer:** banco até `32-origem-visita-garantida.sql` · entregue com o CRM 3.54.2
 

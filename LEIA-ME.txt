@@ -41,6 +41,6 @@ ALTERAR TEXTOS OU CONTATOS
 - Depois de alterar, envie o arquivo ao GitHub; a Vercel publica sozinha.
 
 VERSÃO
-- Versão atual: 1.10.1 (aparece no rodapé, ex.: "v1.10.1").
+- Versão atual: 1.10.2 (aparece no rodapé, ex.: "v1.10.2").
 - Política de Privacidade: privacidade.html (endereço /privacidade). Atualize a data no topo da página sempre que mudar o texto. Histórico completo em CHANGELOG.md.
 - Ao publicar uma nova versão, atualize SITE_VERSAO em assets/site.js e registre a mudança no CHANGELOG.md.
