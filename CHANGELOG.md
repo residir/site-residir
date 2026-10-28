@@ -20,6 +20,14 @@ Cada versão informa o **script mínimo do banco** (pasta `supabase/` do CRM) e 
 
 ---
 
+## [1.11.0] — 28/10/2026
+**Requer:** banco até `40-anotacoes-resumo.sql` · sem mudança no CRM
+
+### Adicionado
+- **Vitrine em cache** (`api/vitrine.js`): imóveis, empreendimentos e identidade do site passam a vir de uma cópia guardada pela Vercel por 2 minutos. Se o banco estiver lento ou fora do ar, a Vercel continua entregando a última cópia boa (por até 1 dia) enquanto tenta atualizar — o site não fica mais preso em “Carregando imóveis…”.
+- Se a cópia da Vercel falhar, o site tenta o banco direto (com limite de tempo); se tudo falhar, mostra a última vitrine guardada no próprio aparelho do visitante.
+- Menos acessos ao banco: um visitante a mais não gera uma consulta a mais.
+
 ## [1.10.3] — 28/10/2026
 **Requer:** banco até `40-anotacoes-resumo.sql` · sem mudança no CRM
 
