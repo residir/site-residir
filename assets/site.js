@@ -47,7 +47,7 @@
     if (semMov) { marcar(); return; }
     criar();
   }
-  var SITE_VERSAO = '1.10.2';
+  var SITE_VERSAO = '1.10.3';
   /* logo do site, configurada no CRM (Ajustes › Logo do site) */
   function identCache() { try { var c = JSON.parse(localStorage.getItem('res_ident') || 'null'); return c && c.d ? c : null; } catch (_) { return null; } }
   function logoHTML(L, onde) {

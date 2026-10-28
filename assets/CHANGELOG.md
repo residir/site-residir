@@ -20,6 +20,44 @@ Cada versão informa o **script mínimo do banco** (pasta `supabase/` do CRM) e 
 
 ---
 
+## [1.10.3] — 28/10/2026
+**Requer:** banco até `40-anotacoes-resumo.sql` · sem mudança no CRM
+
+### Segurança
+- Cabeçalhos de segurança em todas as páginas (`vercel.json`): `X-Content-Type-Options`, `X-Frame-Options` (o site não pode ser embutido em sites de terceiros), `Referrer-Policy`, `Permissions-Policy` (sem câmera, microfone, localização) e `Strict-Transport-Security` (sempre HTTPS).
+- **Política de conteúdo (CSP) em modo de observação** (`Content-Security-Policy-Report-Only`): lista as origens permitidas (Supabase, Google Fonts, YouTube, Vimeo, Google Maps, Vercel Analytics) e só **avisa** no console do navegador se algo fora dela for carregado — nada é bloqueado. Depois de alguns dias sem avisos, pode ser ativada de verdade.
+
+## [1.10.2] — 21/10/2026
+**Requer:** banco até `33-corrige-campanha.sql` · sem mudança no CRM
+
+### Corrigido
+- **Vídeo do imóvel não aparecia** (“A conexão com www.youtube.com foi recusada”): o link do YouTube era colocado direto na página, e o YouTube não permite isso. Agora links do YouTube (vídeo comum, **Shorts**, youtu.be e ao vivo), do Vimeo e de arquivos de vídeo viram o player correto; Shorts aparecem na vertical. Outros links viram o botão “Assistir ao vídeo”.
+
+## [1.10.1] — 19/10/2026
+**Requer:** banco até `32-origem-visita-garantida.sql` · entregue com o CRM 3.54.2
+
+### Corrigido
+- A origem da visita podia não chegar ao lead: agora é enviada **antes** do contato (fica guardada no banco pelo celular e é aplicada quando o lead é criado) e de novo **depois** (para leads que já existiam).
+- Quem já estava navegando no site antes da atualização passa a ter a origem registrada como “Não identificada”, em vez de nenhuma.
+
+## [1.10.0] — 19/10/2026
+**Requer:** banco até `31-origem-visita.sql` · entregue com o CRM 3.54.0
+
+### Adicionado
+- **Origem da visita**: o site identifica de onde o visitante veio — Google (busca), Instagram, Facebook, WhatsApp, YouTube, outro site, acesso direto ou anúncio (Meta ou Google, pelas UTMs e pelos identificadores de clique) — e guarda no navegador por 90 dias a **primeira** e a **última** origem, a página de entrada e o número de visitas. Acessos diretos não apagam uma origem já conhecida.
+- Ao enviar o formulário de contato, a origem é registrada no lead do CRM (`site_origem`).
+### Alterado
+- Política de Privacidade: informa o registro da origem da visita (atualizada em 19/10/2026).
+
+## [1.9.0] — 19/10/2026
+**Requer:** banco até `30-imoveis-escopo.sql` · entregue com o CRM 3.52.1
+
+### Adicionado
+- Faixa no topo de todas as páginas, com o texto destacado no canto superior direito: “✦ Compromisso com a **verdade**, a **ética** e a **satisfação do cliente**.” (centralizado no celular).
+- Página do imóvel no celular: **setas e contador** (“3 / 12”) sobre a foto principal, para passar as fotos sem abrir o visor, e passagem das fotos **deslizando o dedo**.
+### Alterado
+- Visor de fotos: setas maiores, brancas e com sombra, centralizadas na altura da foto (antes eram quase transparentes e difíceis de ver no celular); contador em destaque e passagem deslizando o dedo.
+
 ## [1.8.1] — 19/10/2026
 **Requer:** banco até `29-perfil-busca.sql` · entregue com o CRM 3.51.0
 
