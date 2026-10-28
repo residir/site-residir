@@ -47,7 +47,7 @@
     if (semMov) { marcar(); return; }
     criar();
   }
-  var SITE_VERSAO = '1.10.3';
+  var SITE_VERSAO = '1.11.0';
   /* logo do site, configurada no CRM (Ajustes › Logo do site) */
   function identCache() { try { var c = JSON.parse(localStorage.getItem('res_ident') || 'null'); return c && c.d ? c : null; } catch (_) { return null; } }
   function logoHTML(L, onde) {
@@ -66,7 +66,7 @@
   function identidade() {
     var c = identCache(); if (c) aplicarLogos(c.d);
     if (c && Date.now() - c.t < 600000) return;
-    rpc('site_identidade').then(function (d) { d = d || {}; try { localStorage.setItem('res_ident', JSON.stringify({ t: Date.now(), d: d })); } catch (_) {} aplicarLogos(d); }, function () {});
+    dadosVitrine('identidade', 'site_identidade').then(function (d) { d = d || {}; try { localStorage.setItem('res_ident', JSON.stringify({ t: Date.now(), d: d })); } catch (_) {} aplicarLogos(d); }, function () {});
   } /* versão do site (Versionamento Semântico) — ver CHANGELOG.md */
   var secaoDe = function (i) { return i.secao || (i.lancamento ? 'lancamento' : i.destaque ? 'destaque' : 'vitrine'); };
   var TIT_SEC = { destaque: 'Imóveis em destaque', vitrine: 'Imóveis', lancamento: 'Lançamentos' };
@@ -85,11 +85,21 @@
       body: JSON.stringify(corpo || {})
     }).then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error((j && (j.message || j.hint)) || 'Não foi possível concluir agora.'); return j; }); });
   }
+  // vitrine: primeiro a cópia em cache da Vercel (rápida e resistente a lentidão do banco);
+  // se falhar, o banco direto; se tudo falhar, a última cópia boa guardada neste aparelho
+  function dadosVitrine(f, fn) {
+    var ult = function () { try { var o = JSON.parse(localStorage.getItem('res_ult_' + f) || 'null'); if (o) return o.d; } catch (_) {} throw new Error('Não foi possível carregar agora.'); };
+    var guarda = function (d) { try { localStorage.setItem('res_ult_' + f, JSON.stringify({ t: Date.now(), d: d })); } catch (_) {} return d; };
+    var comPrazo = function (p, ms) { return Promise.race([p, new Promise(function (_, rej) { setTimeout(function () { rej(new Error('tempo esgotado')); }, ms); })]); };
+    return comPrazo(fetch('/api/vitrine?f=' + f).then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }), 10000)
+      .catch(function () { return comPrazo(rpc(fn), 12000); })
+      .then(guarda, ult);
+  }
   var cacheImoveis = null;
   function imoveis() {
     if (cacheImoveis) return cacheImoveis;
     try { var s = sessionStorage.getItem('res_imoveis'); if (s) { var o = JSON.parse(s); if (Date.now() - o.t < 5 * 60e3) return (cacheImoveis = Promise.resolve(o.d)); } } catch (_) {}
-    cacheImoveis = rpc('site_imoveis').then(function (d) { try { sessionStorage.setItem('res_imoveis', JSON.stringify({ t: Date.now(), d: d })); } catch (_) {} return d || []; });
+    cacheImoveis = dadosVitrine('imoveis', 'site_imoveis').then(function (d) { try { sessionStorage.setItem('res_imoveis', JSON.stringify({ t: Date.now(), d: d })); } catch (_) {} return d || []; });
     return cacheImoveis;
   }
 
@@ -227,7 +237,7 @@
       $('#totalLanc').hidden = lanc.length <= 6; $('#totalLanc').textContent = 'Ver os ' + lanc.length;
       return lanc.length;
     }, function () { $('#destaques').innerHTML = '<div class="vazio">Não foi possível carregar os imóveis agora. Fale com a gente pelo WhatsApp.</div>'; return 0; })
-    .then(function (nLanc) { return rpc('site_empreendimentos').then(function (E) { return [nLanc, E || []]; }, function () { return [nLanc, []]; }); })
+    .then(function (nLanc) { return dadosVitrine('empreendimentos', 'site_empreendimentos').then(function (E) { return [nLanc, E || []]; }, function () { return [nLanc, []]; }); })
     .then(function (r) {
       var E = r[1];
       $('#lancLista').hidden = !r[0];
