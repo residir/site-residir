@@ -20,6 +20,13 @@ Cada versão informa o **script mínimo do banco** (pasta `supabase/` do CRM) e 
 
 ---
 
+## [1.10.3] — 28/10/2026
+**Requer:** banco até `40-anotacoes-resumo.sql` · sem mudança no CRM
+
+### Segurança
+- Cabeçalhos de segurança em todas as páginas (`vercel.json`): `X-Content-Type-Options`, `X-Frame-Options` (o site não pode ser embutido em sites de terceiros), `Referrer-Policy`, `Permissions-Policy` (sem câmera, microfone, localização) e `Strict-Transport-Security` (sempre HTTPS).
+- **Política de conteúdo (CSP) em modo de observação** (`Content-Security-Policy-Report-Only`): lista as origens permitidas (Supabase, Google Fonts, YouTube, Vimeo, Google Maps, Vercel Analytics) e só **avisa** no console do navegador se algo fora dela for carregado — nada é bloqueado. Depois de alguns dias sem avisos, pode ser ativada de verdade.
+
 ## [1.10.2] — 21/10/2026
 **Requer:** banco até `33-corrige-campanha.sql` · sem mudança no CRM
 
